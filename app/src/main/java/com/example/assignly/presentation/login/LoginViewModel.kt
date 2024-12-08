@@ -1,9 +1,8 @@
-package com.example.assignly.presentation
+package com.example.assignly.presentation.login
 
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +45,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
             }
 
             is LoginUiState.Error -> {
-                _uiState.value = LoginUiState.Idle (
+                _uiState.value = LoginUiState.Idle(
                     login = current.login,
                     password = current.password
                 )
@@ -63,7 +62,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
             }
 
             is LoginUiState.Error -> {
-                _uiState.value = LoginUiState.Idle (
+                _uiState.value = LoginUiState.Idle(
                     login = "",
                     password = "",
                 )
@@ -78,15 +77,15 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
 
         if (current is LoginUiState.Idle) {
             if (current.login.isBlank() || current.password.isBlank()) {
-                _uiState.value = LoginUiState.Error (
+                _uiState.value = LoginUiState.Error(
                     login = current.login,
                     password = current.password,
                     errorMessage = "Fields shouldn't be blank"
                 )
             }
 
-            _uiState.value = LoginUiState.Loading (
-                login= current.login,
+            _uiState.value = LoginUiState.Loading(
+                login = current.login,
                 password = current.password
             )
 
@@ -106,7 +105,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                         .putInt("id", id)
                         .apply()
 
-                    _uiState.value = LoginUiState.Success (
+                    _uiState.value = LoginUiState.Success(
                         id = id,
                         token = token,
                         successMessage = "Success"
@@ -115,19 +114,19 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
 
                 } catch (e: HttpException) {
                     if (e.code() == 400) {
-                        _uiState.value = LoginUiState.Error (
+                        _uiState.value = LoginUiState.Error(
                             login = current.login,
                             password = current.password,
                             errorMessage = "incorrect password"
                         )
                     } else if (e.code() == 404) {
-                        _uiState.value = LoginUiState.Error (
+                        _uiState.value = LoginUiState.Error(
                             login = current.login,
                             password = current.password,
                             errorMessage = "user not found"
                         )
                     } else {
-                        _uiState.value = LoginUiState.Error (
+                        _uiState.value = LoginUiState.Error(
                             login = current.login,
                             password = current.password,
                             errorMessage = "authorisation error"
