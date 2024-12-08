@@ -34,7 +34,9 @@ interface TasksAPI {
 
     suspend fun getTasks (
         @Query("token") token: String,
-        @Query("group_id") groupId: Int
+        @Query("group_id") groupId: Int,
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
     ): TasksList
 }
 
