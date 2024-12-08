@@ -63,8 +63,8 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
 
             is LoginUiState.Error -> {
                 _uiState.value = LoginUiState.Idle(
-                    login = "",
-                    password = "",
+                    login = current.login,
+                    password = current.password,
                 )
             }
 
