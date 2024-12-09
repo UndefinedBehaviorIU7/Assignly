@@ -53,14 +53,8 @@ fun tasksList(taskCount: Int) {
 
 @Composable
 fun taskPreview(size: Int) {
-    Card(
-        colors = CardDefaults.cardColors(Color.White)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
-                .width(size.dp)
-        ) {
+    Box (modifier = Modifier.background(Color.White).width(size.dp)){
+        Box (modifier = Modifier.align(Alignment.TopStart)) {
             Column(
                 modifier = Modifier
                     .width((size * 2 / 3).dp)
@@ -72,39 +66,32 @@ fun taskPreview(size: Int) {
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
-                    text = "Placehol\n\nder description",
+                    text = "descriptionPlaceholder description",
                     fontSize = 15.sp,
                 )
             }
+        }
 
-            Spacer(modifier = Modifier.weight(1f))
+        Box (modifier = Modifier.align(Alignment.TopEnd)) {
+            Ring(
+                modifier = Modifier
+                    .size(20.dp)
+                    .padding(4.dp)
+            )
+        }
 
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                horizontalAlignment = Alignment.End
+        Box(modifier = Modifier.align(Alignment.BottomEnd)) {
+            Card(
+                modifier = Modifier
+                    .border(1.dp, Color.Black, shape = RoundedCornerShape(10.dp))
+                    .fillMaxHeight(),
+                shape = RoundedCornerShape(8.dp),
             ) {
-                Ring(
+                Text(
+                    text = "22.08",
                     modifier = Modifier
-                        .size(20.dp)
-                        .padding(4.dp)
+                        .padding(5.dp)
                 )
-
-                Spacer(modifier = Modifier.fillMaxHeight())
-
-                Card(
-                    modifier = Modifier
-                        .border(1.dp, Color.Black, shape = RoundedCornerShape(10.dp))
-                        .fillMaxHeight(),
-                    shape = RoundedCornerShape(8.dp),
-                ) {
-                    Text(
-                        text = "22.08",
-                        modifier = Modifier
-                            .padding(5.dp)
-                    )
-                }
-
-
             }
         }
     }
