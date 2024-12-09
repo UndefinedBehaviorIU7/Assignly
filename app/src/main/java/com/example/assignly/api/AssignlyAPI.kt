@@ -42,7 +42,7 @@ interface TasksAPI {
 
 // Регистрация
 interface SignupAPI {
-    @POST("/sigunp")
+    @POST("/signup")
 
     suspend fun signup (
         @Query("login") login: String,
