@@ -3,7 +3,9 @@ package com.example.assignly.presentation.login
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -73,8 +75,19 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                                 focusedBorderColor = colorResource(R.color.active),
                                 unfocusedBorderColor = if (uiState is LoginUiState.Error) Color.Red else Color.Gray
                             ),
-                            modifier = Modifier.padding(bottom = 80.dp)
                         )
+
+                        if (uiState is LoginUiState.Error) {
+                            Spacer(modifier = Modifier.height(35.dp))
+                            Text(
+                                text = "Error: ${uiState.errorMessage}",
+                                color = Color.Red,
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                            )
+                            Spacer(modifier = Modifier.height(35.dp))
+                        } else {
+                            Spacer(modifier = Modifier.height(80.dp))
+                        }
 
                         Button(
                             onClick = { vm.auth() },

@@ -4,24 +4,20 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -44,7 +40,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.assignly.R
-import com.example.assignly.presentation.login.LoginUiState
 
 @Composable
 fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
@@ -139,9 +134,7 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                             else -> ""
                         }
 
-                        Column (
-                            modifier = Modifier.padding(bottom = 60.dp)
-                        ) {
+                        Column {
                             Text(
                                 stringResource(R.string.select_image),
                                 fontSize = 20.sp,
@@ -171,6 +164,18 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                             }
                         }
 
+                        if (uiState is SignupUiState.Error) {
+                            Spacer(modifier = Modifier.height(22.dp))
+                            Text(
+                                text = "Error: ${uiState.errorMessage}",
+                                color = Color.Red,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                            Spacer(modifier = Modifier.height(22.dp))
+                        } else {
+                            Spacer(modifier = Modifier.height(60.dp))
+                        }
+
                         Button(
                             onClick = { vm.signup() },
                             contentPadding = PaddingValues(
@@ -193,6 +198,15 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
 
                 is SignupUiState.Loading -> {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                is SignupUiState.Auth -> {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()

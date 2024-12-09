@@ -82,6 +82,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                     password = current.password,
                     errorMessage = "Fields shouldn't be blank"
                 )
+                return
             }
 
             _uiState.value = LoginUiState.Loading(

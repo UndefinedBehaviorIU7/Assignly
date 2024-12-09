@@ -1,16 +1,14 @@
 package com.example.assignly.presentation.signup
 
 import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.health.connect.datatypes.HeartRateRecord
 import android.net.Uri
 import android.util.Base64
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
-import com.example.assignly.presentation.login.LoginUiState
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -41,6 +39,11 @@ sealed class SignupUiState {
         val passwordRepeat: String,
         val image: Uri?,
         val errorMessage: String
+    ): SignupUiState()
+
+    data class Auth (
+        val login: String,
+        val password: String
     ): SignupUiState()
 
     data class Success (
@@ -194,6 +197,12 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                             password = current.password,
                             image = imageConvert(current.image)
                         )
+
+                        _uiState.value = SignupUiState.Auth (
+                            login = current.login,
+                            password = current.password
+                        )
+                        auth()
                     }
                 } catch (e: HttpException) {
                     if (e.code() == 409) {
@@ -215,6 +224,42 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                             errorMessage = "could not add user"
                         )
                     }
+                }
+            }
+        }
+    }
+
+    private fun auth() {
+        val current = _uiState.value
+        if (current is SignupUiState.Auth) {
+            try {
+                viewModelScope.launch {
+                    val request = NetworkService.auth.authenticate(
+                        login = current.login,
+                        password = current.password
+                    )
+
+                    val sharedPref = getApplication<Application>()
+                        .getSharedPreferences("auth", Context.MODE_PRIVATE)
+                    sharedPref.edit()
+                        .putString("token", request.token)
+                        .putInt("id", request.id)
+                        .apply()
+
+                    _uiState.value = SignupUiState.Success (
+                        successMessage = "Signup success"
+                    )
+                }
+            } catch (e: HttpException) {
+                if (e.code() == 404) {
+                    _uiState.value = SignupUiState.Error (
+                        login = "",
+                        tag = "",
+                        password = "",
+                        passwordRepeat = "",
+                        image = null,
+                        errorMessage = "signup error"
+                    )
                 }
             }
         }
