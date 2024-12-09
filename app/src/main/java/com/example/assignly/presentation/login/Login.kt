@@ -41,27 +41,37 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                 modifier = Modifier.padding()
             )
             when (val uiState = vm.uiState.collectAsState().value) {
-                is LoginUiState.Idle -> {
+                is LoginUiState.Idle, is LoginUiState.Error -> {
                     Column(
                         modifier = Modifier.padding(top = 80.dp)
                     ) {
                         OutlinedTextField(
-                            value = uiState.login,
+                            value = when (uiState) {
+                                is LoginUiState.Idle -> uiState.login
+                                is LoginUiState.Error -> uiState.login
+                                else -> ""
+                            },
                             onValueChange = { vm.loginChange(it) },
                             label = { Text(stringResource(R.string.login)) },
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active)
+                                focusedBorderColor = colorResource(R.color.active),
+                                unfocusedBorderColor = if (uiState is LoginUiState.Error) Color.Red else Color.Gray
                             ),
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
 
                         OutlinedTextField(
-                            value = uiState.password,
+                            value = when (uiState) {
+                                is LoginUiState.Idle -> uiState.password
+                                is LoginUiState.Error -> uiState.password
+                                else -> ""
+                            },
                             onValueChange = { vm.passwordChange(it) },
                             label = { Text(stringResource(R.string.password)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active)
+                                focusedBorderColor = colorResource(R.color.active),
+                                unfocusedBorderColor = if (uiState is LoginUiState.Error) Color.Red else Color.Gray
                             ),
                             modifier = Modifier.padding(bottom = 80.dp)
                         )
@@ -100,58 +110,6 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
                     // TODO: Навигация
                     Text(uiState.successMessage)
-                }
-
-                is LoginUiState.Error -> {
-                    Column (modifier = Modifier.padding(top = 80.dp)) {
-                        OutlinedTextField(
-                            value = uiState.login,
-                            onValueChange = { vm.loginChange(it) },
-                            label = { Text(stringResource(R.string.login)) },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active),
-                                unfocusedBorderColor = Color.Red
-                            ),
-                            modifier = Modifier.padding(bottom = 10.dp)
-                        )
-
-                        OutlinedTextField(
-                            value = uiState.password,
-                            onValueChange = { vm.passwordChange(it) },
-                            label = { Text(stringResource(R.string.password)) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active),
-                                unfocusedBorderColor = Color.Red
-                            ),
-                            modifier = Modifier.padding(bottom = 40.dp)
-                        )
-
-                        Text(
-                            text = "Error: ${uiState.errorMessage}",
-                            color = Color.Red,
-                            modifier = Modifier.padding(bottom = 40.dp).align(Alignment.CenterHorizontally),
-                        )
-
-                        Button(
-                            onClick = { vm.auth() },
-                            contentPadding = PaddingValues(
-                                top = 10.dp,
-                                bottom = 10.dp,
-                                start = 20.dp,
-                                end = 20.dp
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colorResource(R.color.active)
-                            ),
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        ) {
-                            Text (
-                                text = stringResource(R.string.login),
-                                fontSize = 25.sp
-                            )
-                        }
-                    }
                 }
             }
 

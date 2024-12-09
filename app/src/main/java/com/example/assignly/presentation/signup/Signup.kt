@@ -44,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.assignly.R
+import com.example.assignly.presentation.login.LoginUiState
 
 @Composable
 fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
@@ -79,7 +80,8 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                             onValueChange = { vm.loginChange(it) },
                             label = { Text(stringResource(R.string.login)) },
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active)
+                                focusedBorderColor = colorResource(R.color.active),
+                                unfocusedBorderColor = if (uiState is SignupUiState.Error) Color.Red else Color.Gray
                             ),
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
@@ -93,7 +95,8 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                             onValueChange = { vm.tagChange(it) },
                             label = { Text(stringResource(R.string.tag)) },
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active)
+                                focusedBorderColor = colorResource(R.color.active),
+                                unfocusedBorderColor = if (uiState is SignupUiState.Error) Color.Red else Color.Gray
                             ),
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
@@ -108,7 +111,8 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                             label = { Text(stringResource(R.string.password)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active)
+                                focusedBorderColor = colorResource(R.color.active),
+                                unfocusedBorderColor = if (uiState is SignupUiState.Error) Color.Red else Color.Gray
                             ),
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
@@ -123,7 +127,8 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                             label = { Text(stringResource(R.string.repeat_password)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active)
+                                focusedBorderColor = colorResource(R.color.active),
+                                unfocusedBorderColor = if (uiState is SignupUiState.Error) Color.Red else Color.Gray
                             ),
                             modifier = Modifier.padding(bottom = 20.dp)
                         )
