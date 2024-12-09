@@ -24,11 +24,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.assignly.R
 
 
 @Composable
-fun Login(vm: LoginViewModel = viewModel()) {
+fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -97,7 +98,7 @@ fun Login(vm: LoginViewModel = viewModel()) {
 
                 is LoginUiState.Success -> {
 
-                    // Навигация
+                    // TODO: Навигация
                     Text(uiState.successMessage)
                 }
 
@@ -155,11 +156,11 @@ fun Login(vm: LoginViewModel = viewModel()) {
             }
 
             TextButton(
-                onClick = {},
+                onClick = { navController.navigate("signup") },
                 modifier = Modifier.padding(top = 7.dp)
             ) {
                 Text(
-                    stringResource(R.string.signup),
+                    stringResource(R.string.create_new_account),
                     color = colorResource(R.color.active),
                 )
             }

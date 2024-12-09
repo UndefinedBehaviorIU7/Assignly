@@ -2,5 +2,8 @@
     <string name="app_name">Assignly</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
-    <string name="signup">Create new account</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="create_new_account">Create new account</string>
+    <string name="signup">Signup</string>
+    <string name="tag">Tag</string>
 </resources>

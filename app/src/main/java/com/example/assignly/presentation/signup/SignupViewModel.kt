@@ -172,4 +172,8 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
             }
         }
     }
+
+    fun imageConvert(img: String){
+
+    }
 }
