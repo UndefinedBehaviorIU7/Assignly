@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("signup") {
-                    Signup()
+                    Signup(navController)
                 }
             }
         }

@@ -6,4 +6,6 @@
     <string name="create_new_account">Create new account</string>
     <string name="signup">Signup</string>
     <string name="tag">Tag</string>
+    <string name="already_have_an_account">Already have an account? Login</string>
+    <string name="select_image">Select profile image:</string>
 </resources>
