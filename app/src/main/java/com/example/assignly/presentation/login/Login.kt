@@ -1,5 +1,6 @@
 package com.example.assignly.presentation.login
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -37,15 +39,18 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
         contentAlignment = Alignment.Center,
     ) {
         Column (horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.weight(1.3f))
+
             Text(
                 stringResource(R.string.app_name),
                 fontSize = 40.sp,
-                modifier = Modifier.padding()
+                modifier = Modifier.weight(0.7f)
             )
+
             when (val uiState = vm.uiState.collectAsState().value) {
                 is LoginUiState.Idle, is LoginUiState.Error -> {
                     Column(
-                        modifier = Modifier.padding(top = 80.dp)
+                        modifier = Modifier.weight(1.2f)
                     ) {
                         OutlinedTextField(
                             value = when (uiState) {
@@ -88,25 +93,6 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                         } else {
                             Spacer(modifier = Modifier.height(80.dp))
                         }
-
-                        Button(
-                            onClick = { vm.auth() },
-                            contentPadding = PaddingValues(
-                                top = 10.dp,
-                                bottom = 10.dp,
-                                start = 20.dp,
-                                end = 20.dp
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colorResource(R.color.active)
-                            ),
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        ) {
-                            Text (
-                                text = stringResource(R.string.login),
-                                fontSize = 25.sp
-                            )
-                        }
                     }
                 }
 
@@ -126,15 +112,38 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                 }
             }
 
-            TextButton(
-                onClick = { navController.navigate("signup") },
-                modifier = Modifier.padding(top = 7.dp)
-            ) {
-                Text(
-                    stringResource(R.string.create_new_account),
-                    color = colorResource(R.color.active),
-                )
+            Column (horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)) {
+                Button(
+                    onClick = { vm.auth() },
+                    contentPadding = PaddingValues(
+                        top = 10.dp,
+                        bottom = 10.dp,
+                        start = 20.dp,
+                        end = 20.dp
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.active)
+                    ),
+                ) {
+                    Text (
+                        text = stringResource(R.string.login),
+                        fontSize = 25.sp
+                    )
+                }
+
+                TextButton(
+                    onClick = { navController.navigate("signup") },
+                    modifier = Modifier.padding(top = 7.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.create_new_account),
+                        color = colorResource(R.color.active),
+                    )
+                }
             }
+
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
