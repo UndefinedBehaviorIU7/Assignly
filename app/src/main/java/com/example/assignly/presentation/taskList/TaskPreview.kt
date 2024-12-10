@@ -1,4 +1,4 @@
-package com.example.assignly
+package com.example.assignly.presentation.taskList
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.assignly.R
 
 
 @Preview(showSystemUi = true)
