@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,7 +43,6 @@ import com.example.assignly.R
 
 @Composable
 fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
-    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
@@ -56,15 +55,18 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.weight(0.5f))
+
             Text(
                 stringResource(R.string.app_name),
                 fontSize = 40.sp,
-                modifier = Modifier.padding()
+                modifier = Modifier.weight(0.5f)
             )
             when (val uiState = vm.uiState.collectAsState().value) {
                 is SignupUiState.Idle, is SignupUiState.Error -> {
                     Column(
-                        modifier = Modifier.padding(top = 80.dp)
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.weight(2.5f).fillMaxWidth()
                     ) {
                         OutlinedTextField(
                             value = when (uiState) {
@@ -134,33 +136,31 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                             else -> ""
                         }
 
-                        Column {
-                            Text(
-                                stringResource(R.string.select_image),
-                                fontSize = 20.sp,
-                                color = Color.DarkGray,
-                                modifier = Modifier.padding(bottom = 10.dp)
-                            )
-                            Box {
-                                if (imageUri != null) {
-                                    Image(
-                                        painter = rememberAsyncImagePainter(imageUri),
-                                        contentDescription = "Selected Image",
-                                        modifier = Modifier
-                                            .size(100.dp)
-                                            .clip(CircleShape),
-                                        contentScale = ContentScale.Crop,
-                                        alignment = Alignment.Center
-                                    )
-                                } else {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.placeholder),
-                                        contentDescription = "Image Placeholder",
-                                        alignment = Alignment.Center,
-                                        modifier = Modifier.size(100.dp)
-                                            .clickable { launcher.launch("image/*") }
-                                    )
-                                }
+                        Text(
+                            stringResource(R.string.select_image),
+                            fontSize = 20.sp,
+                            color = Color.DarkGray,
+                            modifier = Modifier.padding(bottom = 10.dp)
+                        )
+                        Box (contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                            if (imageUri != null) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(imageUri),
+                                    contentDescription = "Selected Image",
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop,
+                                    alignment = Alignment.Center
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(id = R.drawable.placeholder),
+                                    contentDescription = "Image Placeholder",
+                                    alignment = Alignment.Center,
+                                    modifier = Modifier.size(100.dp)
+                                        .clickable { launcher.launch("image/*") }
+                                )
                             }
                         }
 
@@ -174,25 +174,6 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                             Spacer(modifier = Modifier.height(22.dp))
                         } else {
                             Spacer(modifier = Modifier.height(60.dp))
-                        }
-
-                        Button(
-                            onClick = { vm.signup() },
-                            contentPadding = PaddingValues(
-                                top = 10.dp,
-                                bottom = 10.dp,
-                                start = 20.dp,
-                                end = 20.dp
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colorResource(R.color.active)
-                            ),
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        ) {
-                            Text (
-                                text = stringResource(R.string.signup),
-                                fontSize = 25.sp
-                            )
                         }
                     }
                 }
@@ -221,15 +202,39 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
             }
 
-            TextButton(
-                onClick = { navController.navigate("login") },
-                modifier = Modifier.padding(top = 7.dp)
-            ) {
-                Text(
-                    stringResource(R.string.already_have_an_account),
-                    color = colorResource(R.color.active),
-                )
+            Column (horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(0.5f)) {
+                Button(
+                    onClick = { vm.signup() },
+                    contentPadding = PaddingValues(
+                        top = 10.dp,
+                        bottom = 10.dp,
+                        start = 20.dp,
+                        end = 20.dp
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.active)
+                    ),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text (
+                        text = stringResource(R.string.signup),
+                        fontSize = 25.sp
+                    )
+                }
+
+                TextButton(
+                    onClick = { navController.navigate("login") },
+                    modifier = Modifier.padding(top = 7.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.already_have_an_account),
+                        color = colorResource(R.color.active),
+                    )
+                }
             }
+
+            Spacer(modifier = Modifier.weight(0.5f))
         }
     }
 }
