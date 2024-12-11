@@ -1,32 +1,21 @@
 package com.example.assignly.presentation.login
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.assignly.R
@@ -34,20 +23,6 @@ import com.example.assignly.presentation.Navigation
 import com.example.assignly.presentation.forms.ButtonForm
 import com.example.assignly.presentation.forms.Form
 
-@SuppressLint("ResourceType")
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
-@Composable
-fun LogoPreview() {
-    Icon(
-        painter = painterResource(id = R.drawable.assignly_text),
-        modifier = Modifier.size(300.dp),
-        contentDescription = "",
-        tint = Color.Black
-    )
-}
 
 @Composable
 fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
@@ -57,11 +32,11 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.7f))
 
             Image(
                 painter = painterResource(R.drawable.assignly_text),
-                modifier = Modifier.size(280.dp),
+                modifier = Modifier.size(280.dp).weight(1f),
                 contentDescription = ""
             )
 
@@ -77,7 +52,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                         Form (value = uiState.password, label = stringResource(R.string.password),
                             isError = false, lambda = { vm.passwordChange(it) })
 
-                        Spacer(modifier = Modifier.height(80.dp))
+                        Spacer(modifier = Modifier.weight(0.5f))
                     }
                 }
 
@@ -99,7 +74,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                 .weight(0.5f),
                         )
-                        Spacer(modifier = Modifier.weight(0.5f))
+                        Spacer(modifier = Modifier.weight(0.1f))
                     }
                 }
 
