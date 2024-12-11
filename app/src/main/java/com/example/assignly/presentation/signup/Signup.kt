@@ -3,29 +3,31 @@ package com.example.assignly.presentation.signup
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.assignly.R
-import com.example.assignly.presentation.Navigation
-import com.example.assignly.presentation.forms.ButtonForm
 import com.example.assignly.presentation.forms.Form
 import com.example.assignly.presentation.forms.ImageForm
 
@@ -43,16 +45,13 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.weight(0.2f))
+            Spacer(modifier = Modifier.weight(0.5f))
 
-            Image(
-                painter = painterResource(R.drawable.assignly_text),
-                modifier = Modifier.size(280.dp).weight(0.5f),
-                contentDescription = ""
+            Text(
+                stringResource(R.string.app_name),
+                fontSize = 40.sp,
+                modifier = Modifier.weight(0.5f)
             )
-
-            Spacer(modifier = Modifier.weight(0.2f))
-
             when (val uiState = vm.uiState.collectAsState().value) {
                 is SignupUiState.Idle -> {
                     Column(
@@ -130,9 +129,37 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
             }
 
-            ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.signup),
-                navText = stringResource(R.string.already_have_an_account), action = {vm.signup()},
-                navigate = { navController.navigate(Navigation.LOGIN.toString()) })
+            Column (horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(0.5f)) {
+                Button(
+                    onClick = { vm.signup() },
+                    contentPadding = PaddingValues(
+                        top = 10.dp,
+                        bottom = 10.dp,
+                        start = 20.dp,
+                        end = 20.dp
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.active)
+                    ),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text (
+                        text = stringResource(R.string.signup),
+                        fontSize = 25.sp
+                    )
+                }
+
+                TextButton(
+                    onClick = { navController.navigate("login") },
+                    modifier = Modifier.padding(top = 7.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.already_have_an_account),
+                        color = colorResource(R.color.active),
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.weight(0.5f))
         }
