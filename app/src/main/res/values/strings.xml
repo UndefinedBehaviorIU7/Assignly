@@ -8,4 +8,6 @@
     <string name="tag">Tag</string>
     <string name="already_have_an_account">Already have an account? Login</string>
     <string name="select_image">Select profile image:</string>
+    <string name="login_nav">login</string>
+    <string name="signup_nav">signup</string>
 </resources>
