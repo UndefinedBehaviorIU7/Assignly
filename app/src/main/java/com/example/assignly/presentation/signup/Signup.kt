@@ -3,8 +3,6 @@ package com.example.assignly.presentation.signup
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,33 +11,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.example.assignly.R
+import com.example.assignly.presentation.forms.Form
+import com.example.assignly.presentation.forms.ImageForm
 
 @Composable
 fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
@@ -63,118 +53,55 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 modifier = Modifier.weight(0.5f)
             )
             when (val uiState = vm.uiState.collectAsState().value) {
-                is SignupUiState.Idle, is SignupUiState.Error -> {
+                is SignupUiState.Idle -> {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.weight(2.5f).fillMaxWidth()
                     ) {
-                        OutlinedTextField(
-                            value = when (uiState) {
-                                is SignupUiState.Idle -> uiState.login
-                                is SignupUiState.Error -> uiState.login
-                                else -> ""
-                            },
-                            onValueChange = { vm.loginChange(it) },
-                            label = { Text(stringResource(R.string.login)) },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active),
-                                unfocusedBorderColor = if (uiState is SignupUiState.Error) Color.Red else Color.Gray
-                            ),
-                            modifier = Modifier.padding(bottom = 10.dp)
-                        )
+                        Form(uiState.login, label = stringResource(R.string.login),
+                            isError = false, lambda = {vm.loginChange(it)})
 
-                        OutlinedTextField(
-                            value = when (uiState) {
-                                is SignupUiState.Idle -> uiState.tag
-                                is SignupUiState.Error -> uiState.tag
-                                else -> ""
-                            },
-                            onValueChange = { vm.tagChange(it) },
-                            label = { Text(stringResource(R.string.tag)) },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active),
-                                unfocusedBorderColor = if (uiState is SignupUiState.Error) Color.Red else Color.Gray
-                            ),
-                            modifier = Modifier.padding(bottom = 10.dp)
-                        )
+                        Form(uiState.tag, label = stringResource(R.string.tag),
+                            isError = false, lambda = {vm.tagChange(it)})
 
-                        OutlinedTextField(
-                            value = when (uiState) {
-                                is SignupUiState.Idle -> uiState.password
-                                is SignupUiState.Error -> uiState.password
-                                else -> ""
-                            },
-                            onValueChange = { vm.passwordChange(it) },
-                            label = { Text(stringResource(R.string.password)) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active),
-                                unfocusedBorderColor = if (uiState is SignupUiState.Error) Color.Red else Color.Gray
-                            ),
-                            modifier = Modifier.padding(bottom = 10.dp)
-                        )
+                        Form(uiState.password, label = stringResource(R.string.password),
+                            isError = false, lambda = {vm.passwordChange(it)})
 
-                        OutlinedTextField(
-                            value = when (uiState) {
-                                is SignupUiState.Idle -> uiState.passwordRepeat
-                                is SignupUiState.Error -> uiState.passwordRepeat
-                                else -> ""
-                            },
-                            onValueChange = { vm.passwordRepeatChange(it) },
-                            label = { Text(stringResource(R.string.repeat_password)) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colorResource(R.color.active),
-                                unfocusedBorderColor = if (uiState is SignupUiState.Error) Color.Red else Color.Gray
-                            ),
-                            modifier = Modifier.padding(bottom = 20.dp)
-                        )
+                        Form(uiState.passwordRepeat, label = stringResource(R.string.repeat_password),
+                            isError = false, lambda = {vm.passwordRepeatChange(it)})
 
-                        val imageUri = when (uiState) {
-                            is SignupUiState.Idle -> uiState.image
-                            is SignupUiState.Error -> uiState.image
-                            else -> ""
-                        }
+                        ImageForm(uiState.image) { launcher.launch("image/*") }
 
+                        Spacer(modifier = Modifier.height(60.dp))
+                    }
+                }
+
+                is SignupUiState.Error -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.weight(2.5f).fillMaxWidth()
+                    ) {
+                        Form(uiState.login, label = stringResource(R.string.login),
+                            isError = true, lambda = {vm.loginChange(it)})
+
+                        Form(uiState.tag, label = stringResource(R.string.tag),
+                            isError = true, lambda = {vm.tagChange(it)})
+
+                        Form(uiState.password, label = stringResource(R.string.password),
+                            isError = true, lambda = {vm.passwordChange(it)})
+
+                        Form(uiState.passwordRepeat, label = stringResource(R.string.repeat_password),
+                            isError = true, lambda = {vm.passwordRepeatChange(it)})
+
+                        ImageForm(uiState.image) { launcher.launch("image/*") }
+
+                        Spacer(modifier = Modifier.height(35.dp))
                         Text(
-                            stringResource(R.string.select_image),
-                            fontSize = 20.sp,
-                            color = Color.DarkGray,
-                            modifier = Modifier.padding(bottom = 10.dp)
+                            text = "Error: ${uiState.errorMessage}",
+                            color = Color.Red,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
                         )
-                        Box (contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                            if (imageUri != null) {
-                                Image(
-                                    painter = rememberAsyncImagePainter(imageUri),
-                                    contentDescription = "Selected Image",
-                                    modifier = Modifier
-                                        .size(100.dp)
-                                        .clip(CircleShape),
-                                    contentScale = ContentScale.Crop,
-                                    alignment = Alignment.Center
-                                )
-                            } else {
-                                Image(
-                                    painter = painterResource(id = R.drawable.placeholder),
-                                    contentDescription = "Image Placeholder",
-                                    alignment = Alignment.Center,
-                                    modifier = Modifier.size(100.dp)
-                                        .clickable { launcher.launch("image/*") }
-                                )
-                            }
-                        }
-
-                        if (uiState is SignupUiState.Error) {
-                            Spacer(modifier = Modifier.height(22.dp))
-                            Text(
-                                text = "Error: ${uiState.errorMessage}",
-                                color = Color.Red,
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
-                            Spacer(modifier = Modifier.height(22.dp))
-                        } else {
-                            Spacer(modifier = Modifier.height(60.dp))
-                        }
+                        Spacer(modifier = Modifier.height(35.dp))
                     }
                 }
 

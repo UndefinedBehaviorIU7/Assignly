@@ -21,67 +21,11 @@ object NetworkService {
     // TODO: не забыть поменять на хосте
     private const val BASE_URL = "http://10.0.2.2:8000"
 
-    val auth: AuthAPI by lazy {
+    val api: AssignlyAPI by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(AuthAPI::class.java)
-    }
-
-    val groupsList: GroupsAPI by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(GroupsAPI::class.java)
-    }
-
-    val tasksList: TasksAPI by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(TasksAPI::class.java)
-    }
-
-    val signup: SignupAPI by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(SignupAPI::class.java)
-    }
-
-    val addTask: AddTaskAPI by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(AddTaskAPI::class.java)
-    }
-
-    val userById: UserByIdAPI by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(UserByIdAPI::class.java)
-    }
-
-    val allUsers: AllUsersAPI by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(AllUsersAPI::class.java)
-    }
-
-    val logout: LogoutAPI by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(LogoutAPI::class.java)
+            .create(AssignlyAPI::class.java)
     }
 }

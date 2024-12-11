@@ -15,42 +15,6 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.ByteArrayOutputStream
 
-sealed class SignupUiState {
-    data class Idle (
-        val login: String = "",
-        val tag: String = "",
-        val password: String = "",
-        val passwordRepeat: String = "",
-        val image: Uri? = null
-    ): SignupUiState()
-
-    data class Loading (
-        val login: String,
-        val tag: String,
-        val password: String,
-        val passwordRepeat: String,
-        val image: Uri?
-    ): SignupUiState()
-
-    data class Error (
-        val login: String,
-        val tag: String,
-        val password: String,
-        val passwordRepeat: String,
-        val image: Uri?,
-        val errorMessage: String
-    ): SignupUiState()
-
-    data class Auth (
-        val login: String,
-        val password: String
-    ): SignupUiState()
-
-    data class Success (
-        val successMessage: String
-    ): SignupUiState()
-}
-
 class SignupViewModel(application: Application): AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<SignupUiState>(SignupUiState.Idle())
     val uiState = _uiState.asStateFlow()
@@ -191,7 +155,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                             errorMessage = "passwords don't match"
                         )
                     } else {
-                        val request = NetworkService.signup.signup(
+                        val request = NetworkService.api.signup(
                             login = current.login,
                             tag = current.tag,
                             password = current.password,
@@ -234,7 +198,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
         if (current is SignupUiState.Auth) {
             try {
                 viewModelScope.launch {
-                    val request = NetworkService.auth.authenticate(
+                    val request = NetworkService.api.authenticate(
                         login = current.login,
                         password = current.password
                     )

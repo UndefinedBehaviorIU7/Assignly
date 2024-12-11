@@ -10,30 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-sealed class LoginUiState {
-    data class Idle (
-        val login: String = "",
-        val password: String = ""
-    ): LoginUiState()
-
-    data class Loading (
-        val login: String,
-        val password: String
-    ): LoginUiState()
-
-    data class Error (
-        val login: String,
-        val password: String,
-        val errorMessage: String
-    ): LoginUiState()
-
-    data class Success (
-        val id: Int,
-        val token: String,
-        val successMessage: String
-    ): LoginUiState()
-}
-
 class LoginViewModel(application: Application): AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle())
     val uiState = _uiState.asStateFlow()
@@ -92,7 +68,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
 
             viewModelScope.launch {
                 try {
-                    val request = NetworkService.auth.authenticate(
+                    val request = NetworkService.api.authenticate(
                         login = current.login,
                         password = current.password
                     )
