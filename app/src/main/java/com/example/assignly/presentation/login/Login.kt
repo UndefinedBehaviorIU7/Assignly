@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.assignly.R
+import com.example.assignly.presentation.Navigation
+import com.example.assignly.presentation.forms.ButtonForm
 import com.example.assignly.presentation.forms.Form
 
 @SuppressLint("ResourceType")
@@ -117,40 +119,11 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                 }
             }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(1f)
-            ) {
-                Button(
-                    onClick = { vm.auth() },
-                    contentPadding = PaddingValues(
-                        top = 10.dp,
-                        bottom = 10.dp,
-                        start = 20.dp,
-                        end = 20.dp
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.active)
-                    ),
-                ) {
-                    Text(
-                        text = stringResource(R.string.login),
-                        fontSize = 25.sp
-                    )
-                }
+            ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.login),
+                navText = stringResource(R.string.create_new_account), action = {vm.auth()},
+                navigate = { navController.navigate(Navigation.SIGNUP.toString()) })
 
-                TextButton(
-                    onClick = { navController.navigate("signup") },
-                    modifier = Modifier.padding(top = 7.dp)
-                ) {
-                    Text(
-                        stringResource(R.string.create_new_account),
-                        color = colorResource(R.color.active),
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.6f))
         }
     }
 }
