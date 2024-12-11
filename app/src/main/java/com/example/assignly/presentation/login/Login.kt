@@ -1,6 +1,5 @@
 package com.example.assignly.presentation.login
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -32,20 +29,6 @@ import androidx.navigation.NavController
 import com.example.assignly.R
 import com.example.assignly.presentation.forms.Form
 
-@SuppressLint("ResourceType")
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
-@Composable
-fun LogoPreview() {
-    Icon(
-        painter = painterResource(id = R.drawable.assignly_text),
-        modifier = Modifier.size(300.dp),
-        contentDescription = "",
-        tint = Color.Black
-    )
-}
 
 @Composable
 fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
