@@ -1,11 +1,7 @@
 package com.example.assignly.presentation.login
 
 import android.annotation.SuppressLint
-import android.graphics.ImageDecoder
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,13 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -28,15 +21,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.example.assignly.R
 import com.example.assignly.presentation.forms.Form
 
@@ -89,7 +81,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
                 is LoginUiState.Error -> {
                     Column(
-                        modifier = Modifier.weight(1.2f)
+                        modifier = Modifier.weight(1.3f)
                     ) {
 
                         Form (value = uiState.login, label = stringResource(R.string.login),
@@ -98,13 +90,14 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                         Form (value = uiState.password, label = stringResource(R.string.password),
                             isError = true, lambda = { vm.passwordChange(it) })
 
-                        Spacer(modifier = Modifier.height(35.dp))
+                        Spacer(modifier = Modifier.weight(0.5f))
                         Text(
                             text = "Error: ${uiState.errorMessage}",
                             color = Color.Red,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                                .weight(0.5f),
                         )
-                        Spacer(modifier = Modifier.height(35.dp))
+                        Spacer(modifier = Modifier.weight(0.5f))
                     }
                 }
 
