@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
+import com.example.assignly.api.models.Task
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -11,10 +12,12 @@ import retrofit2.HttpException
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _uiState = MutableStateFlow<TaskUiState>(TaskUiState.Idle)
+    private val _uiState = MutableStateFlow<TaskUiState>(TaskUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val repository = TaskRepository(NetworkService.api)
+
+
     fun fetchTasks(token: String, groupId: Int, limit: Int, offset: Int) {
         _uiState.value = TaskUiState.Loading
 

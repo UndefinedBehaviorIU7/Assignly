@@ -1,6 +1,6 @@
 package com.example.assignly.api.models
 
-data class TasksList (
+data class Task (
     val id: Int,
     val groupId: Int,
     val ownerId: Int,

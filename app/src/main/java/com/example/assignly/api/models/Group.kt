@@ -1,6 +1,6 @@
 package com.example.assignly.api.models
 
-data class GroupsList (
+data class Group (
     val id: Int,
     val name: String,
     val description: String,
