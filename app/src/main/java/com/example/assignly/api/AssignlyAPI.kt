@@ -62,4 +62,25 @@ interface AssignlyAPI {
     suspend fun logout (
         @Query("token") token: String
     ): Response
+
+    @POST("/add_group")
+    suspend fun addGroup (
+        @Query("token") token: String,
+        @Query("name") name: String,
+        @Query("description") description: String,
+        @Query("image") image: String,
+        @Query("members") members: List<Int>
+    )
+
+    @GET("/group_by_id")
+    suspend fun groupById (
+        @Query("token") token: String,
+        @Query("group_id") groupId: Int
+    )
+
+    @GET("/task_by_id")
+    suspend fun taskById (
+        @Query("token") token: String,
+        @Query("task_id") taskId: Int
+    )
 }
