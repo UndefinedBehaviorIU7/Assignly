@@ -1,6 +1,7 @@
 package com.example.assignly.presentation.forms
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -19,7 +20,7 @@ fun Form (value: String, label: String, isError: Boolean, lambda: (String) -> Un
         label = { Text(label) },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = colorResource(R.color.active),
-            unfocusedBorderColor = if (isError) Color.Red else Color.Gray
+            unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.primary else Color.Gray,
         ),
         modifier = Modifier.padding(bottom = 10.dp)
     )
