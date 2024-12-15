@@ -141,7 +141,7 @@ fun TasksList(
                 color = MaterialTheme.colorScheme.tertiary
             )
 
-            Row(modifier = Modifier.padding(top = 5.dp, start = 28.dp, end = 30.dp)) {
+            Row(modifier = Modifier.padding(top = 5.dp, start = 28.dp, end = 30.dp, bottom=10.dp)) {
                 Box(
                     modifier = Modifier
                         .background(
