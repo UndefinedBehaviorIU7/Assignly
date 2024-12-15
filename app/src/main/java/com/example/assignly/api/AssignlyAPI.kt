@@ -27,7 +27,7 @@ interface AssignlyAPI {
         @Query("group_id") groupId: Int,
         @Query("limit") limit: Int,
         @Query("offset") offset: Int
-    ): TasksList
+    ): List<TasksList>
 
     @POST("/signup")
     suspend fun signup (
