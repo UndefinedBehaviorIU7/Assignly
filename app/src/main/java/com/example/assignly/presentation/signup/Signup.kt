@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.assignly.R
+import com.example.assignly.presentation.Navigation
 import com.example.assignly.presentation.forms.Form
 import com.example.assignly.presentation.forms.ImageForm
 
@@ -51,18 +52,18 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.weight(0.2f))
+            Spacer(modifier = Modifier.weight(0.1f))
 
             Image(
                 painter = painterResource(R.drawable.assignly_text),
-                modifier = Modifier.size(280.dp).weight(1f),
+                modifier = Modifier.size(260.dp).weight(0.6f),
                 contentDescription = ""
             )
             when (val uiState = vm.uiState.collectAsState().value) {
                 is SignupUiState.Idle -> {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.weight(2.5f).fillMaxWidth()
+                        modifier = Modifier.weight(2f).fillMaxWidth()
                     ) {
                         Form(uiState.login, label = stringResource(R.string.login),
                             isError = false, lambda = {vm.loginChange(it)})
@@ -159,7 +160,7 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
 
                 TextButton(
-                    onClick = { navController.navigate("login") },
+                    onClick = { navController.navigate(Navigation.LOGIN.toString()) },
                     modifier = Modifier.padding(top = 7.dp)
                 ) {
                     Text(
@@ -169,7 +170,7 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
             }
 
-            Spacer(modifier = Modifier.weight(0.5f))
+            Spacer(modifier = Modifier.weight(0.2f))
         }
     }
 }
