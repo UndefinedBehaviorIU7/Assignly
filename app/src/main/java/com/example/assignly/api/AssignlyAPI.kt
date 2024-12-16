@@ -83,4 +83,11 @@ interface AssignlyAPI {
         @Query("token") token: String,
         @Query("task_id") taskId: Int
     )
+
+    @POST("/status_change")
+    suspend fun statusChange (
+        @Query("token") token: String,
+        @Query("task_id") taskId: Int,
+        @Query("status") status: Int
+    )
 }
