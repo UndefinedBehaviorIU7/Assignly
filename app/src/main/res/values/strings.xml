@@ -10,4 +10,9 @@
     <string name="select_image">Select profile image:</string>
     <string name="login_nav">login</string>
     <string name="signup_nav">signup</string>
+    <string name="title">Task title</string>
+    <string name="assign">Assign to</string>
+    <string name="summary">Summary</string>
+    <string name="description">Description</string>
+    <string name="deadline">Deadline</string>
 </resources>
