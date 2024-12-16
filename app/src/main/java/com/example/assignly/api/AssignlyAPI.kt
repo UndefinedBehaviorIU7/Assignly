@@ -5,8 +5,12 @@ import com.example.assignly.api.models.GroupsList
 import com.example.assignly.api.models.Response
 import com.example.assignly.api.models.TasksList
 import com.example.assignly.api.models.User
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface AssignlyAPI {
@@ -29,12 +33,13 @@ interface AssignlyAPI {
         @Query("offset") offset: Int
     ): TasksList
 
+    @Multipart
     @POST("/signup")
     suspend fun signup (
-        @Query("login") login: String,
-        @Query("tag") tag: String,
-        @Query("password") password: String,
-        @Query("img") image: String
+        @Part("login") login: RequestBody,
+        @Part("tag") tag: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part image: MultipartBody.Part
     ): Response
 
     @POST("/add_task")
@@ -63,13 +68,13 @@ interface AssignlyAPI {
         @Query("token") token: String
     ): Response
 
+    @Multipart
     @POST("/add_group")
     suspend fun addGroup (
-        @Query("token") token: String,
-        @Query("name") name: String,
-        @Query("description") description: String,
-        @Query("image") image: String,
-        @Query("members") members: List<Int>
+        @Part("token") token: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part image: MultipartBody.Part,
+        @Part("members") members: RequestBody
     )
 
     @GET("/group_by_id")
@@ -89,5 +94,11 @@ interface AssignlyAPI {
         @Query("token") token: String,
         @Query("task_id") taskId: Int,
         @Query("status") status: Int
+    )
+
+    @Multipart
+    @GET("/get_image")
+    suspend fun getImage (
+        @Query("path") path: RequestBody
     )
 }

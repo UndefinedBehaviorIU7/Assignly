@@ -12,8 +12,16 @@ import com.example.assignly.api.NetworkService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import retrofit2.Retrofit
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 class SignupViewModel(application: Application): AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<SignupUiState>(SignupUiState.Idle())
@@ -155,11 +163,14 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                             errorMessage = "passwords don't match"
                         )
                     } else {
+                        val imageUri = current.image
+                        val imagePart = imageUri?.let { createMultipartBodyPart(it) }
+
                         val request = NetworkService.api.signup(
-                            login = current.login,
-                            tag = current.tag,
-                            password = current.password,
-                            image = imageConvert(current.image)
+                            login = current.login.toRequestBody("text/plain".toMediaTypeOrNull()),
+                            tag = current.tag.toRequestBody("text/plain".toMediaTypeOrNull()),
+                            password = current.password.toRequestBody("text/plain".toMediaTypeOrNull()),
+                            image = imagePart!!
                         )
 
                         _uiState.value = SignupUiState.Auth (
@@ -229,20 +240,21 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    private fun imageConvert(uri: Uri?): String {
-        if (uri == null) return ""
-        return try {
-            val inputStream = getApplication<Application>().contentResolver.openInputStream(uri)
-            inputStream.use {
-                val bitmap = BitmapFactory.decodeStream(it) ?: return ""
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-                val byteArray = byteArrayOutputStream.toByteArray()
-                Base64.encodeToString(byteArray, Base64.DEFAULT)
+    private fun uriToFile(uri: Uri): File? {
+        val context = getApplication<Application>().applicationContext
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val file = File(context.cacheDir, "temp_image_${System.currentTimeMillis()}.jpg")
+        inputStream.use { input ->
+            FileOutputStream(file).use { output ->
+                input.copyTo(output)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return ""
         }
+        return file
+    }
+
+    private fun createMultipartBodyPart(uri: Uri): MultipartBody.Part? {
+        val file = uriToFile(uri) ?: return null
+        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData("img", file.name, requestFile)
     }
 }
