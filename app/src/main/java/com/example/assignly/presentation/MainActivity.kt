@@ -9,8 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.assignly.presentation.login.Login
 import com.example.assignly.presentation.signup.Signup
+import com.example.assignly.ui.theme.AssignlyTheme
 
-enum class Navigation (val route: String) {
+enum class Navigation(val route: String) {
     LOGIN("login"),
     SIGNUP("signup")
 }
@@ -20,18 +21,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
+            AssignlyTheme (dynamicColor = false){
+                val navController = rememberNavController()
 
-            NavHost(navController = navController,
-                startDestination = Navigation.LOGIN.toString()) {
-                composable(Navigation.LOGIN.toString()) {
-                    Login(navController)
-                }
+                NavHost(
+                    navController = navController,
+                    startDestination = Navigation.LOGIN.toString()
+                ) {
+                    composable(Navigation.LOGIN.toString()) {
+                        Login(navController)
+                    }
 
-                composable(Navigation.SIGNUP.toString()) {
-                    Signup(navController)
+                    composable(Navigation.SIGNUP.toString()) {
+                        Signup(navController)
+                    }
                 }
             }
+
         }
     }
 }

@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.assignly.R
-import com.example.assignly.presentation.Navigation
-import com.example.assignly.presentation.forms.ButtonForm
 import com.example.assignly.presentation.forms.Form
 import com.example.assignly.presentation.forms.ImageForm
 
@@ -134,9 +132,37 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
             }
 
-            ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.signup),
-                navText = stringResource(R.string.already_have_an_account), action = {vm.signup()},
-                navigate = { navController.navigate(Navigation.LOGIN.toString()) })
+            Column (horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(0.5f)) {
+                Button(
+                    onClick = { vm.signup() },
+                    contentPadding = PaddingValues(
+                        top = 10.dp,
+                        bottom = 10.dp,
+                        start = 20.dp,
+                        end = 20.dp
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.active)
+                    ),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text (
+                        text = stringResource(R.string.signup),
+                        fontSize = 25.sp
+                    )
+                }
+
+                TextButton(
+                    onClick = { navController.navigate("login") },
+                    modifier = Modifier.padding(top = 7.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.already_have_an_account),
+                        color = colorResource(R.color.active),
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.weight(0.5f))
         }
