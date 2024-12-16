@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.assignly.presentation.addGroup.AddGroup
 import com.example.assignly.presentation.login.Login
 import com.example.assignly.presentation.signup.Signup
 import com.example.assignly.presentation.taskList.TaskViewModel
@@ -17,7 +18,8 @@ import com.example.assignly.ui.theme.AssignlyTheme
 enum class Navigation(val route: String) {
     LOGIN("login"),
     SIGNUP("signup"),
-    TASK_LIST("task_list")
+    TASK_LIST("task_list"),
+    ADD_GROUP("add_group")
 }
 
 class MainActivity : ComponentActivity() {
@@ -30,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Navigation.LOGIN.toString()
+                    startDestination = Navigation.ADD_GROUP.toString()
                 ) {
                     composable(Navigation.LOGIN.toString()) {
                         Login(navController)
@@ -45,6 +47,10 @@ class MainActivity : ComponentActivity() {
                         val groupId = 21
                         val taskViewModel: TaskViewModel by viewModels()
                         TasksList(navController = navController, token = token, groupId = groupId, vm = taskViewModel)
+                    }
+
+                    composable(Navigation.ADD_GROUP.toString()) {
+                        AddGroup(navController = navController)
                     }
                 }
             }
