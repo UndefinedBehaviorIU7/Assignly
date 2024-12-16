@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -46,8 +44,7 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
     )
 
     Box(
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -131,8 +128,7 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
 
                 is SignupUiState.Success -> {
                     // TODO: навигация
-                    Text(text = uiState.successMessage,
-                        color = MaterialTheme.colorScheme.tertiary)
+                    Text(uiState.successMessage)
                 }
             }
 
@@ -153,8 +149,7 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 ) {
                     Text (
                         text = stringResource(R.string.signup),
-                        fontSize = 25.sp,
-                        color = MaterialTheme.colorScheme.tertiary
+                        fontSize = 25.sp
                     )
                 }
 
