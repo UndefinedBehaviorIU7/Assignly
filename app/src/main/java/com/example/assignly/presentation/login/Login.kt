@@ -91,8 +91,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
                 is LoginUiState.Success -> {
 
-                    // TODO: Навигация
-                    Text(uiState.successMessage)
+                    navController.navigate(Navigation.TASK_LIST.toString())
                 }
             }
 

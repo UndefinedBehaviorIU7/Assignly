@@ -1,9 +1,9 @@
 package com.example.assignly.api
 
 import com.example.assignly.api.models.Auth
-import com.example.assignly.api.models.GroupsList
+import com.example.assignly.api.models.Group
 import com.example.assignly.api.models.Response
-import com.example.assignly.api.models.TasksList
+import com.example.assignly.api.models.Task
 import com.example.assignly.api.models.User
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -23,7 +23,7 @@ interface AssignlyAPI {
     @GET("/groups/")
     suspend fun getGroups (
         @Query("token") token: String
-    ): GroupsList
+    ): Group
 
     @GET("/tasks")
     suspend fun getTasks (
@@ -31,7 +31,7 @@ interface AssignlyAPI {
         @Query("group_id") groupId: Int,
         @Query("limit") limit: Int,
         @Query("offset") offset: Int
-    ): TasksList
+    ): List<Task>
 
     @Multipart
     @POST("/signup")
