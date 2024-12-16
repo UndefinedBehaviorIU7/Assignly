@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
 import com.example.assignly.api.models.Task
+import com.example.assignly.presentation.login.LoginUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -24,7 +25,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val tasks = repository.getTasks(token, groupId, limit, offset)
-                _uiState.value = TaskUiState.Success(tasks)
+                _uiState.value = TaskUiState.All(tasks)
             } catch (e: HttpException) {
                 _uiState.value = TaskUiState.Error("Error: ${e.message()}")
             } catch (e: Exception) {
@@ -32,4 +33,61 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun inProgress(token: String, groupId: Int, limit: Int, offset: Int) {
+        when (val current = _uiState.value) {
+            is TaskUiState.All -> {
+                viewModelScope.launch {
+                    _uiState.value = TaskUiState.InProcess(
+                        tasks = repository.getTasks(
+                            token,
+                            groupId,
+                            limit,
+                            offset
+                        ).filter { it.status != 0 })
+                }
+            }
+            is TaskUiState.Done -> {
+                viewModelScope.launch {
+                    _uiState.value = TaskUiState.InProcess(
+                        tasks = repository.getTasks(
+                            token,
+                            groupId,
+                            limit,
+                            offset
+                        ).filter { it.status != 0 })
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun done(token: String, groupId: Int, limit: Int, offset: Int) {
+        when (val current = _uiState.value) {
+            is TaskUiState.All -> {
+                viewModelScope.launch {
+                    _uiState.value = TaskUiState.Done(
+                        tasks = repository.getTasks(
+                            token,
+                            groupId,
+                            limit,
+                            offset
+                        ).filter { it.status == 0 })
+                }
+            }
+            is TaskUiState.InProcess -> {
+                viewModelScope.launch {
+                    _uiState.value = TaskUiState.Done(
+                        tasks = repository.getTasks(
+                            token,
+                            groupId,
+                            limit,
+                            offset
+                        ).filter { it.status == 0 })
+                }
+            }
+            else -> Unit
+        }
+    }
+
 }
