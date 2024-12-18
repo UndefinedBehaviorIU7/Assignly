@@ -1,6 +1,7 @@
 package com.example.assignly.presentation.addtask
 
 import android.net.Uri
+import com.example.assignly.api.models.User
 import com.example.assignly.presentation.signup.SignupUiState
 import retrofit2.http.Query
 
@@ -13,7 +14,7 @@ sealed class AddTaskUIState {
         val summary: String = "",
         val deadline: String = "",
         val status: Int = 0,
-        val members: List<Int> = mutableListOf(),
+        val members: List<User> = mutableListOf(),
     ): AddTaskUIState()
 
     data class Error (
@@ -24,7 +25,7 @@ sealed class AddTaskUIState {
         val summary: String,
         val deadline: String,
         val status: Int,
-        val members: List<Int>
+        val members: List<User>
     ): AddTaskUIState()
 
     data class Loading (
@@ -35,7 +36,7 @@ sealed class AddTaskUIState {
         val summary: String,
         val deadline: String,
         val status: Int,
-        val members: List<Int>
+        val members: List<User>
     ): AddTaskUIState()
 
 }

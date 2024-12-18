@@ -9,6 +9,7 @@ import android.util.Base64
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
+import com.example.assignly.api.models.User
 import com.example.assignly.presentation.addtask.AddTaskUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,7 +45,7 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
     }
 
 
-    fun membersChange(newMembers: List<Int>) {
+    fun membersChange(newMembers: List<User>) {
         when (val current = _uiState.value) {
             is AddTaskUIState.Idle -> {
                 _uiState.value = current.copy(members = newMembers)
