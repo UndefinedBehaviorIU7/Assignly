@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Navigation.ADD_GROUP.toString()
+                    startDestination = Navigation.LOGIN.toString()
                 ) {
                     composable(Navigation.LOGIN.toString()) {
                         Login(navController)

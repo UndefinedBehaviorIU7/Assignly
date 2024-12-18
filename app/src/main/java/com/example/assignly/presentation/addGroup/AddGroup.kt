@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.assignly.R
+import com.example.assignly.api.NetworkService
 import com.example.assignly.presentation.Navigation
 import com.example.assignly.presentation.forms.Form
 import com.example.assignly.presentation.forms.ImageForm
@@ -61,24 +63,34 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
                         Form(value = uiState.name,
                             label = stringResource(R.string.group_name),
                             isError = false,
-                            lambda = { }
+                            lambda = { vm.nameChange(it) }
                         )
 
-                        Form(value = "aboba", // TODO: дописать отображение мемберов
-                            label = stringResource(R.string.members),
-                            isError = false,
-                            lambda = { }
+                        OutlinedTextField(
+                            value = vm.membersToString(uiState.members),
+                            onValueChange = { vm.membersChange() },
+                            label = { Text(stringResource(R.string.members)) },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                                focusedTextColor = MaterialTheme.colorScheme.background
+                            ),
+                            readOnly = true,
+                            modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
                         )
 
                         OutlinedTextField(
                             value = uiState.description,
-                            onValueChange = {},
+                            onValueChange = { vm.descriptionChange(it) },
                             label = { Text(stringResource(R.string.description)) },
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.background,
                             ),
-                            modifier = Modifier.padding(bottom = 50.dp).fillMaxWidth().heightIn(200.dp)
+                            modifier = Modifier
+                                .padding(bottom = 50.dp)
+                                .fillMaxWidth()
+                                .heightIn(200.dp)
                         )
                     }
                     ImageForm(uiState.image, text = stringResource(R.string.select_group_image), lambda = { launcher.launch("image/*") })
