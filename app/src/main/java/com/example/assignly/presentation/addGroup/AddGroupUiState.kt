@@ -8,26 +8,29 @@ sealed class AddGroupUiState {
     data class Idle (
         val name: String = "",
         val description: String = "",
-        val members: List<User> = emptyList<User>(),
+        val members: MutableList<User> = mutableListOf<User>(),
         val allUsers: List<User> = emptyList<User>(),
-        val image: Uri? = null
+        val image: Uri? = null,
+        var menuExpanded: Boolean = false
     ): AddGroupUiState()
 
     data class Loading (
         val name: String,
         val description: String,
-        val members: List<User>,
+        val members: MutableList<User>,
         val allUsers: List<User>,
-        val image: Uri?
+        val image: Uri?,
+        var menuExpanded: Boolean
     ): AddGroupUiState()
 
     data class Error (
         val name: String,
         val description: String,
-        val members: List<User>,
+        val members: MutableList<User>,
         val allUsers: List<User>,
         val image: Uri?,
-        val errorMessage: String
+        val errorMessage: String,
+        var menuExpanded: Boolean
     ): AddGroupUiState()
 
     data class Success (

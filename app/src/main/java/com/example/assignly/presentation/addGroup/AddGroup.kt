@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -78,6 +80,19 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
                             readOnly = true,
                             modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
                         )
+
+                        DropdownMenu(
+                            expanded = uiState.menuExpanded,
+                            onDismissRequest = { uiState.menuExpanded = false }
+                        ) {
+                            uiState.members.forEach { member ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        uiState.members.add(member)
+                                        uiState.menuExpanded = false
+                                    })
+                            }
+                        }
 
                         OutlinedTextField(
                             value = uiState.description,

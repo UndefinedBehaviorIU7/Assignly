@@ -14,17 +14,32 @@ class AddGroupViewModel(application: Application): AndroidViewModel(application)
     private val _uiState = MutableStateFlow(AddGroupUiState.Idle())
     val uiState = _uiState.asStateFlow()
 
-    suspend fun loadUsers(): List<User> = NetworkService.api.allUsers()
+    suspend fun loadUsers(): RequestResult {
+        try {
+            val request = NetworkService.api.allUsers()
+            return RequestResult(
+                code = 0,
+                result = request
+            )
+        } catch (e: Exception) {
+            return RequestResult (
+                code = 1,
+                result = emptyList()
+            )
+        }
+    }
 
     init {
         viewModelScope.launch {
             val current = _uiState.value
+            val result = loadUsers()
             _uiState.value = AddGroupUiState.Idle(
                 name = current.name,
                 description = current.description,
                 members = current.members,
-                allUsers = loadUsers(),
-                image = current.image
+                allUsers = if (result.code == 0) result.result else emptyList(),
+                image = current.image,
+                menuExpanded = current.menuExpanded
             )
         }
     }
@@ -41,7 +56,8 @@ class AddGroupViewModel(application: Application): AndroidViewModel(application)
                     description = current.description,
                     members = current.members,
                     allUsers = current.allUsers,
-                    image = current.image
+                    image = current.image,
+                    menuExpanded = current.menuExpanded
                 )
             }
 
@@ -61,7 +77,8 @@ class AddGroupViewModel(application: Application): AndroidViewModel(application)
                     description = current.description,
                     members = current.members,
                     allUsers = current.allUsers,
-                    image = current.image
+                    image = current.image,
+                    menuExpanded = current.menuExpanded
                 )
             }
 

@@ -226,16 +226,27 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                     )
                 }
             } catch (e: HttpException) {
-                if (e.code() == 404) {
+                if (e.code() == 409) {
                     _uiState.value = SignupUiState.Error (
                         login = "",
                         tag = "",
                         password = "",
                         passwordRepeat = "",
                         image = null,
-                        errorMessage = "signup error"
+                        errorMessage = "user already exist"
+                    )
+                } else {
+                    _uiState.value = SignupUiState.Error (
+                        login = "",
+                        tag = "",
+                        password = "",
+                        passwordRepeat = "",
+                        image = null,
+                        errorMessage = "no internet connection"
                     )
                 }
+            } catch (e: Exception) {
+                _uiState
             }
         }
     }
