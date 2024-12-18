@@ -2,10 +2,7 @@ package com.example.assignly.presentation.signup
 
 import android.app.Application
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Base64
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
@@ -14,12 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
-import retrofit2.Retrofit
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
@@ -226,16 +220,27 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                     )
                 }
             } catch (e: HttpException) {
-                if (e.code() == 404) {
+                if (e.code() == 409) {
                     _uiState.value = SignupUiState.Error (
                         login = "",
                         tag = "",
                         password = "",
                         passwordRepeat = "",
                         image = null,
-                        errorMessage = "signup error"
+                        errorMessage = "user already exist"
+                    )
+                } else {
+                    _uiState.value = SignupUiState.Error (
+                        login = "",
+                        tag = "",
+                        password = "",
+                        passwordRepeat = "",
+                        image = null,
+                        errorMessage = "no internet connection"
                     )
                 }
+            } catch (e: Exception) {
+                _uiState
             }
         }
     }
