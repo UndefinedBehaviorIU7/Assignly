@@ -74,31 +74,32 @@ interface AssignlyAPI {
         @Part("token") token: RequestBody,
         @Part("name") name: RequestBody,
         @Part image: MultipartBody.Part,
+        @Part("description") description: RequestBody,
         @Part("members") members: RequestBody
-    )
+    ): Response
 
     @GET("/group_by_id")
     suspend fun groupById (
         @Query("token") token: String,
         @Query("group_id") groupId: Int
-    )
+    ): Group
 
     @GET("/task_by_id")
     suspend fun taskById (
         @Query("token") token: String,
         @Query("task_id") taskId: Int
-    )
+    ): Task
 
     @POST("/status_change")
     suspend fun statusChange (
         @Query("token") token: String,
         @Query("task_id") taskId: Int,
         @Query("status") status: Int
-    )
+    ): Response
 
     @Multipart
     @GET("/get_image")
     suspend fun getImage (
         @Query("path") path: RequestBody
-    )
+    ): Response
 }

@@ -5,16 +5,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.assignly.R
 
 @Composable
 fun ButtonForm(modifier: Modifier, buttonText: String, navText: String,
@@ -30,13 +28,14 @@ fun ButtonForm(modifier: Modifier, buttonText: String, navText: String,
                 end = 20.dp
             ),
             colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.active)
+                containerColor = MaterialTheme.colorScheme.onPrimary
             ),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text (
                 text = buttonText,
-                fontSize = 25.sp
+                fontSize = 25.sp,
+                color = MaterialTheme.colorScheme.secondary
             )
         }
 
@@ -46,7 +45,7 @@ fun ButtonForm(modifier: Modifier, buttonText: String, navText: String,
         ) {
             Text(
                 text = navText,
-                color = colorResource(R.color.active),
+                color = MaterialTheme.colorScheme.onPrimary,
             )
         }
     }

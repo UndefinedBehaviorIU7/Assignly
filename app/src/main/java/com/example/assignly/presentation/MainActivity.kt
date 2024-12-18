@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.assignly.presentation.addGroup.AddGroup
 import com.example.assignly.presentation.login.Login
 import com.example.assignly.presentation.signup.Signup
 import com.example.assignly.presentation.taskList.TaskViewModel
@@ -20,8 +21,10 @@ enum class Navigation(val route: String) {
     SIGNUP("signup"),
     TASK_LIST("task_list"),
     ADD_TASK("add_task")
+    ADD_GROUP("add_group")
 }
 
+@ExperimentalStdlibApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +56,10 @@ class MainActivity : ComponentActivity() {
                         val groupId = 21
                         val taskViewModel: TaskViewModel by viewModels()
                         TasksList(navController = navController, token = token, groupId = groupId, vm = taskViewModel)
+                    }
+
+                    composable(Navigation.ADD_GROUP.toString()) {
+                        AddGroup(navController = navController)
                     }
                 }
             }

@@ -109,6 +109,12 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                             errorMessage = "authorisation error"
                         )
                     }
+                } catch (e: Exception) {
+                    _uiState.value = LoginUiState.Error(
+                        login = current.login,
+                        password = current.password,
+                        errorMessage = "no internet connection"
+                    )
                 }
             }
         }
