@@ -22,6 +22,7 @@ enum class Navigation(val route: String) {
     ADD_GROUP("add_group")
 }
 
+@ExperimentalStdlibApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Navigation.ADD_GROUP.toString()
+                    startDestination = Navigation.LOGIN.toString()
                 ) {
                     composable(Navigation.LOGIN.toString()) {
                         Login(navController)

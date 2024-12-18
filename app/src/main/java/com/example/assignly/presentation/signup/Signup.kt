@@ -77,6 +77,12 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
 
                         Spacer(modifier = Modifier.height(60.dp))
                     }
+
+                    ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.signup),
+                        navText = stringResource(R.string.already_have_an_account), action = {vm.signup()},
+                        navigate = { navController.navigate(Navigation.LOGIN.toString()) })
+
+                    Spacer(modifier = Modifier.weight(0.5f))
                 }
 
                 is SignupUiState.Error -> {
@@ -111,6 +117,12 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                         )
                         Spacer(modifier = Modifier.height(35.dp))
                     }
+
+                    ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.signup),
+                        navText = stringResource(R.string.already_have_an_account), action = {vm.signup()},
+                        navigate = { navController.navigate(Navigation.LOGIN.toString()) })
+
+                    Spacer(modifier = Modifier.weight(0.5f))
                 }
 
                 is SignupUiState.Loading -> {
@@ -132,16 +144,9 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
 
                 is SignupUiState.Success -> {
-                    // TODO: навигация
-                    Text(uiState.successMessage)
+                    navController.navigate(Navigation.ADD_GROUP.toString())
                 }
             }
-
-            ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.signup),
-                navText = stringResource(R.string.already_have_an_account), action = {vm.signup()},
-                navigate = { navController.navigate(Navigation.LOGIN.toString()) })
-
-            Spacer(modifier = Modifier.weight(0.5f))
         }
     }
 }

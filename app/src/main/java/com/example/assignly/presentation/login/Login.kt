@@ -62,6 +62,12 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
                         Spacer(modifier = Modifier.weight(0.5f))
                     }
+
+                    ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.login),
+                        navText = stringResource(R.string.create_new_account), action = {vm.auth()},
+                        navigate = { navController.navigate(Navigation.SIGNUP.toString()) })
+
+                    Spacer(modifier = Modifier.weight(0.6f))
                 }
 
                 is LoginUiState.Error -> {
@@ -86,6 +92,11 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                         }
                         Spacer(modifier = Modifier.weight(0.1f))
                     }
+                    ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.login),
+                        navText = stringResource(R.string.create_new_account), action = {vm.auth()},
+                        navigate = { navController.navigate(Navigation.SIGNUP.toString()) })
+
+                    Spacer(modifier = Modifier.weight(0.6f))
                 }
 
                 is LoginUiState.Loading -> {
@@ -99,15 +110,9 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
                 is LoginUiState.Success -> {
 
-                    navController.navigate(Navigation.TASK_LIST.toString())
+                    navController.navigate(Navigation.ADD_GROUP.toString())
                 }
             }
-
-            ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.login),
-                navText = stringResource(R.string.create_new_account), action = {vm.auth()},
-                navigate = { navController.navigate(Navigation.SIGNUP.toString()) })
-
-            Spacer(modifier = Modifier.weight(0.6f))
         }
     }
 }
