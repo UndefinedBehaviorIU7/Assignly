@@ -24,3 +24,17 @@ fun Form (value: String, label: String, isError: Boolean, lambda: (String) -> Un
         modifier = Modifier.padding(bottom = 10.dp)
     )
 }
+
+@Composable
+fun FormInt (value: Int, label: String, isError: Boolean, lambda: (String) -> Unit) {
+    OutlinedTextField(
+        value = value.toString(),
+        onValueChange = lambda,
+        label = { Text(label) },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = colorResource(R.color.active),
+            unfocusedBorderColor = if (isError) Color.Red else Color.Gray
+        ),
+        modifier = Modifier.padding(bottom = 10.dp)
+    )
+}

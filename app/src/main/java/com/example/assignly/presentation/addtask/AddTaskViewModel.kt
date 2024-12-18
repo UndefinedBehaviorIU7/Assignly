@@ -17,22 +17,25 @@ import retrofit2.HttpException
 import java.io.ByteArrayOutputStream
 
 class AddTaskViewModel(application: Application): AndroidViewModel(application) {
-    private val _uiState = MutableStateFlow<AddTaskUIState>(AddTaskUIState.AddTask())
+    private val _uiState = MutableStateFlow<AddTaskUIState>(AddTaskUIState.Idle())
     val uiState = _uiState.asStateFlow()
 
-    fun loginChange(newLogin: String) {
+    fun nameChange(newName: String) {
         when (val current = _uiState.value) {
-            is SignupUiState.Idle -> {
-                _uiState.value = current.copy(login = newLogin)
+            is AddTaskUIState.Idle -> {
+                _uiState.value = current.copy(name = newName)
             }
 
-            is SignupUiState.Error -> {
-                _uiState.value = SignupUiState.Idle(
-                    login = current.login,
-                    tag = current.tag,
-                    password = current.password,
-                    passwordRepeat = current.passwordRepeat,
-                    image = current.image
+            is AddTaskUIState.Error -> {
+                _uiState.value = AddTaskUIState.Idle(
+                    groupId = current.groupId,
+                    ownerId = current.ownerId,
+                    name = current.name,
+                    description = current.description,
+                    summary = current.summary,
+                    deadline = current.deadline,
+                    status = current.status,
+                    members = current.members,
                 )
             }
 
@@ -40,19 +43,23 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun tagChange(newTag: String) {
+
+    fun membersChange(newMembers: List<Int>) {
         when (val current = _uiState.value) {
-            is SignupUiState.Idle -> {
-                _uiState.value = current.copy(tag = newTag)
+            is AddTaskUIState.Idle -> {
+                _uiState.value = current.copy(members = newMembers)
             }
 
-            is SignupUiState.Error -> {
-                _uiState.value = SignupUiState.Idle(
-                    login = current.login,
-                    tag = current.tag,
-                    password = current.password,
-                    passwordRepeat = current.passwordRepeat,
-                    image = current.image
+            is AddTaskUIState.Error -> {
+                _uiState.value = AddTaskUIState.Idle(
+                    groupId = current.groupId,
+                    ownerId = current.ownerId,
+                    name = current.name,
+                    description = current.description,
+                    summary = current.summary,
+                    deadline = current.deadline,
+                    status = current.status,
+                    members = current.members,
                 )
             }
 
@@ -60,19 +67,22 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun passwordChange(newPassword: String) {
+    fun summaryChange(newSummary: String) {
         when (val current = _uiState.value) {
-            is SignupUiState.Idle -> {
-                _uiState.value = current.copy(password = newPassword)
+            is AddTaskUIState.Idle -> {
+                _uiState.value = current.copy(summary = newSummary)
             }
 
-            is SignupUiState.Error -> {
-                _uiState.value = SignupUiState.Idle(
-                    login = current.login,
-                    tag = current.tag,
-                    password = current.password,
-                    passwordRepeat = current.passwordRepeat,
-                    image = current.image
+            is AddTaskUIState.Error -> {
+                _uiState.value = AddTaskUIState.Idle(
+                    groupId = current.groupId,
+                    ownerId = current.ownerId,
+                    name = current.name,
+                    description = current.description,
+                    summary = current.summary,
+                    deadline = current.deadline,
+                    status = current.status,
+                    members = current.members,
                 )
             }
 
@@ -80,19 +90,22 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun passwordRepeatChange(newPasswordRepeat: String) {
+    fun descriptionChange(newDescription: String) {
         when (val current = _uiState.value) {
-            is SignupUiState.Idle -> {
-                _uiState.value = current.copy(passwordRepeat = newPasswordRepeat)
+            is AddTaskUIState.Idle -> {
+                _uiState.value = current.copy(description = newDescription)
             }
 
-            is SignupUiState.Error -> {
-                _uiState.value = SignupUiState.Idle(
-                    login = current.login,
-                    tag = current.tag,
-                    password = current.password,
-                    passwordRepeat = current.passwordRepeat,
-                    image = current.image
+            is AddTaskUIState.Error -> {
+                _uiState.value = AddTaskUIState.Idle(
+                    groupId = current.groupId,
+                    ownerId = current.ownerId,
+                    name = current.name,
+                    description = current.description,
+                    summary = current.summary,
+                    deadline = current.deadline,
+                    status = current.status,
+                    members = current.members,
                 )
             }
 
@@ -100,19 +113,22 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun imageChange(newImage: Uri?) {
+    fun deadlineChange(newDeadline: String) {
         when (val current = _uiState.value) {
-            is SignupUiState.Idle -> {
-                _uiState.value = current.copy(image = newImage)
+            is AddTaskUIState.Idle -> {
+                _uiState.value = current.copy(deadline = newDeadline)
             }
 
-            is SignupUiState.Error -> {
-                _uiState.value = SignupUiState.Idle(
-                    login = current.login,
-                    tag = current.tag,
-                    password = current.password,
-                    passwordRepeat = current.passwordRepeat,
-                    image = current.image
+            is AddTaskUIState.Error -> {
+                _uiState.value = AddTaskUIState.Idle(
+                    groupId = current.groupId,
+                    ownerId = current.ownerId,
+                    name = current.name,
+                    description = current.description,
+                    summary = current.summary,
+                    deadline = current.deadline,
+                    status = current.status,
+                    members = current.members,
                 )
             }
 
@@ -120,113 +136,40 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun signup() {
+    fun addtask() {
         val current = _uiState.value
 
-        if (current is SignupUiState.Idle) {
-            if (current.login.isBlank() || current.password.isBlank()) {
-                _uiState.value = SignupUiState.Error(
-                    login = current.login,
-                    tag = current.tag,
-                    password = current.password,
-                    passwordRepeat = current.passwordRepeat,
-                    image = current.image,
-                    errorMessage = "Fields shouldn't be blank"
-                )
-                return
-            }
+        if (current is AddTaskUIState.Idle) {
 
-            _uiState.value = SignupUiState.Loading(
-                login = current.login,
-                tag = current.tag,
-                password = current.password,
-                passwordRepeat = current.passwordRepeat,
-                image = current.image
+
+            _uiState.value = AddTaskUIState.Loading(
+                groupId = current.groupId,
+                ownerId = current.ownerId,
+                name = current.name,
+                description = current.description,
+                summary = current.summary,
+                deadline = current.deadline,
+                status = current.status,
+                members = current.members,
             )
 
             viewModelScope.launch {
                 try {
-                    if (current.password != current.passwordRepeat)  {
-                        _uiState.value = SignupUiState.Error (
-                            login = current.login,
-                            tag = current.tag,
-                            password = current.password,
-                            passwordRepeat = current.passwordRepeat,
-                            image = current.image,
-                            errorMessage = "passwords don't match"
-                        )
-                    } else {
-                        val request = NetworkService.api.signup(
-                            login = current.login,
-                            tag = current.tag,
-                            password = current.password,
-                            image = imageConvert(current.image)
-                        )
-
-                        _uiState.value = SignupUiState.Auth (
-                            login = current.login,
-                            password = current.password
-                        )
-                        auth()
-                    }
+                    val request = NetworkService.api.addTask(
+                        groupId = current.groupId,
+                        ownerId = current.ownerId,
+                        name = current.name,
+                        description = current.description,
+                        summary = current.summary,
+                        deadline = current.deadline,
+                        status = current.status,
+                        members = current.members
+                    )
                 } catch (e: HttpException) {
-                    if (e.code() == 409) {
-                        _uiState.value = SignupUiState.Error (
-                            login = current.login,
-                            tag = current.tag,
-                            password = current.password,
-                            passwordRepeat = current.passwordRepeat,
-                            image = current.image,
-                            errorMessage = "user already exists"
-                        )
-                    } else if (e.code() == 404) {
-                        _uiState.value = SignupUiState.Error (
-                            login = current.login,
-                            tag = current.tag,
-                            password = current.password,
-                            passwordRepeat = current.passwordRepeat,
-                            image = current.image,
-                            errorMessage = "could not add user"
-                        )
-                    }
+
                 }
             }
         }
     }
 
-    private fun auth() {
-        val current = _uiState.value
-        if (current is SignupUiState.Auth) {
-            try {
-                viewModelScope.launch {
-                    val request = NetworkService.api.authenticate(
-                        login = current.login,
-                        password = current.password
-                    )
-
-                    val sharedPref = getApplication<Application>()
-                        .getSharedPreferences("auth", Context.MODE_PRIVATE)
-                    sharedPref.edit()
-                        .putString("token", request.token)
-                        .putInt("id", request.id)
-                        .apply()
-
-                    _uiState.value = SignupUiState.Success (
-                        successMessage = "Signup success"
-                    )
-                }
-            } catch (e: HttpException) {
-                if (e.code() == 404) {
-                    _uiState.value = SignupUiState.Error (
-                        login = "",
-                        tag = "",
-                        password = "",
-                        passwordRepeat = "",
-                        image = null,
-                        errorMessage = "signup error"
-                    )
-                }
-            }
-        }
-    }
 }

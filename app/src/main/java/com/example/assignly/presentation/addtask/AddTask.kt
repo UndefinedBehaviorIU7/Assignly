@@ -37,12 +37,12 @@ fun Login(navController: NavController, vm: AddTaskViewModel = viewModel()) {
 
 
             when (val uiState = vm.uiState.collectAsState().value) {
-                is AddTaskViewModel.Idle -> {
+                is AddTaskUIState.Idle -> {
                     Column(
                         modifier = Modifier.weight(1.2f)
                     ) {
 
-                        Form (value = uiState.login, label = stringResource(R.string.login),
+                        Form (value = , label = stringResource(R.string.login),
                             isError = false, lambda = { vm.loginChange(it) })
 
                         Form (value = uiState.password, label = stringResource(R.string.password),
@@ -52,7 +52,7 @@ fun Login(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                     }
                 }
 
-                is LoginUiState.Error -> {
+                is AddTaskUIState.Error -> {
                     Column(
                         modifier = Modifier.weight(1.3f)
                     ) {
@@ -74,19 +74,13 @@ fun Login(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                     }
                 }
 
-                is LoginUiState.Loading -> {
+                is AddTaskUIState.Loading -> {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
                         CircularProgressIndicator()
                     }
-                }
-
-                is LoginUiState.Success -> {
-
-                    // TODO: Навигация
-                    Text(uiState.successMessage)
                 }
             }
 
