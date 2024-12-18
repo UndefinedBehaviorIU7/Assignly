@@ -14,11 +14,13 @@ import com.example.assignly.presentation.signup.Signup
 import com.example.assignly.presentation.taskList.TaskViewModel
 import com.example.assignly.presentation.taskList.TasksList
 import com.example.assignly.ui.theme.AssignlyTheme
+import com.example.assignly.presentation.addtask.AddTask
 
 enum class Navigation(val route: String) {
     LOGIN("login"),
     SIGNUP("signup"),
     TASK_LIST("task_list"),
+    ADD_TASK("add_task")
     ADD_GROUP("add_group")
 }
 
@@ -33,10 +35,16 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Navigation.LOGIN.toString()
+                    startDestination = Navigation.ADD_TASK.toString()
                 ) {
+
+
                     composable(Navigation.LOGIN.toString()) {
                         Login(navController)
+                    }
+
+                    composable(Navigation.ADD_TASK.toString()) {
+                        AddTask(navController)
                     }
 
                     composable(Navigation.SIGNUP.toString()) {

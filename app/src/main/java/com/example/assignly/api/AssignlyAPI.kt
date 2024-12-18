@@ -51,8 +51,8 @@ interface AssignlyAPI {
         @Query("summary") summary: String,
         @Query("deadline") deadline: String,
         @Query("status") status: Int,
-        @Query("members") members: List<Int>
-    )
+        @Query("members") members: List<User>
+    ): Response
 
     @GET("user_by_id")
     suspend fun userById (
