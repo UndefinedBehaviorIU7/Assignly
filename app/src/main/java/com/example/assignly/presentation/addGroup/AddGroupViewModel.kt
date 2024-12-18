@@ -1,15 +1,25 @@
 package com.example.assignly.presentation.addGroup
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
 import com.example.assignly.api.models.User
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import java.io.File
+import java.io.FileOutputStream
 
 class AddGroupViewModel(application: Application): AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<AddGroupUiState>(AddGroupUiState.Idle())
@@ -72,6 +82,7 @@ class AddGroupViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
+    @ExperimentalStdlibApi
     fun addGroup() {
         val current = _uiState.value
         if (current is AddGroupUiState.Idle) {
@@ -102,9 +113,31 @@ class AddGroupViewModel(application: Application): AndroidViewModel(application)
 
             viewModelScope.launch {
                 try {
+                    val imageUri = current.image
+                    val imagePart = imageUri?.let { createMultipartBodyPart(it) }
+                    val sharedPref = getApplication<Application>()
+                        .getSharedPreferences("auth", Context.MODE_PRIVATE)
+                    val token = sharedPref.getString("token", "")
+
+                    val moshi = Moshi.Builder().build()
+                    val jsonAdapter: JsonAdapter<List<User>> = moshi.adapter<List<User>>()
+
+                    val json = jsonAdapter.toJson(current.members)
+
+                    val request = NetworkService.api.addGroup(
+                        token = token!!.toRequestBody(),
+                        name = current.name.toRequestBody(),
+                        description = current.description.toRequestBody(),
+                        image = imagePart!!,
+                        members = json.toRequestBody()
+                    )
+
+                    _uiState.value = AddGroupUiState.Success(
+                        successMessage = "Group added successfully"
+                    )
 
                 } catch (e: Exception) {
-                    var errorMessage: String = ""
+                    var errorMessage = ""
                     when (e) {
                         is HttpException -> {
                             if (e.code() == 400) {
@@ -130,6 +163,24 @@ class AddGroupViewModel(application: Application): AndroidViewModel(application)
                 }
             }
         }
+    }
+
+    private fun createMultipartBodyPart(uri: Uri): MultipartBody.Part? {
+        val file = uriToFile(uri) ?: return null
+        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData("img", file.name, requestFile)
+    }
+
+    private fun uriToFile(uri: Uri): File? {
+        val context = getApplication<Application>().applicationContext
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val file = File(context.cacheDir, "temp_image_${System.currentTimeMillis()}.jpg")
+        inputStream.use { input ->
+            FileOutputStream(file).use { output ->
+                input.copyTo(output)
+            }
+        }
+        return file
     }
 
     fun membersToString(members: List<User>): String {

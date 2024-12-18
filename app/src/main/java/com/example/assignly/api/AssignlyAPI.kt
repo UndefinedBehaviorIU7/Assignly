@@ -74,6 +74,7 @@ interface AssignlyAPI {
         @Part("token") token: RequestBody,
         @Part("name") name: RequestBody,
         @Part image: MultipartBody.Part,
+        @Part("description") description: RequestBody,
         @Part("members") members: RequestBody
     )
 
