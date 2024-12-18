@@ -5,35 +5,44 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.assignly.R
-import com.example.assignly.api.NetworkService
 import com.example.assignly.presentation.Navigation
 import com.example.assignly.presentation.forms.Form
 import com.example.assignly.presentation.forms.ImageForm
@@ -43,7 +52,7 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
-
+            vm.updateUiState(newImage = uri)
         }
     )
 
@@ -54,7 +63,7 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
             modifier = Modifier
                 .size(50.dp)
                 .clickable { navController.navigate(Navigation.LOGIN.toString()) }
-                .weight(1f),
+                .weight(0.7f),
         )
 
         when (val uiState = vm.uiState.collectAsState().value) {
@@ -65,42 +74,70 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
                         Form(value = uiState.name,
                             label = stringResource(R.string.group_name),
                             isError = false,
-                            lambda = { vm.nameChange(it) }
+                            lambda = { vm.updateUiState(newName = it) }
                         )
 
-                        OutlinedTextField(
-                            value = vm.membersToString(uiState.members),
-                            onValueChange = { vm.membersChange() },
-                            label = { Text(stringResource(R.string.members)) },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                                focusedTextColor = MaterialTheme.colorScheme.background
-                            ),
-                            readOnly = true,
-                            modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
-                        )
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedTextField(
+                                value = vm.membersToString(uiState.members),
+                                onValueChange = { vm.updateUiState(newMembers = uiState.members) },
+                                label = { Text(stringResource(R.string.members)) },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                                    cursorColor = MaterialTheme.colorScheme.onSurface
+                                ),
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (uiState.menuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                                        contentDescription = "arrow",
+                                        modifier = Modifier.clickable { vm.updateUiState(newMenuExtended = !uiState.menuExpanded) }
+                                    )
+                                },
+                                readOnly = true,
+                                modifier = Modifier
+                                    .padding(bottom = 10.dp)
+                                    .fillMaxWidth()
+                                    .onGloballyPositioned { coordinates ->
+                                        uiState.membersFieldPosition= coordinates.size.toSize()
+                                    }
+                            )
 
-                        DropdownMenu(
-                            expanded = uiState.menuExpanded,
-                            onDismissRequest = { uiState.menuExpanded = false }
-                        ) {
-                            uiState.members.forEach { member ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        uiState.members.add(member)
-                                        uiState.menuExpanded = false
-                                    })
+                            DropdownMenu(
+                                expanded = uiState.menuExpanded,
+                                onDismissRequest = { vm.updateUiState(newMenuExtended = false) },
+                                modifier = Modifier
+                                    .width(with(LocalDensity.current){uiState.membersFieldPosition.width.toDp()})
+                                    .height(300.dp)
+                            ) {
+                                uiState.allUsers.forEach { user ->
+                                    DropdownMenuItem(
+                                        text = { Text(text = user.tag) },
+                                        onClick = {
+                                            if (user !in uiState.members) {
+                                                uiState.members.add(user)
+                                            } else {
+                                                uiState.members.remove(user)
+                                            }
+                                            vm.updateUiState(newMenuExtended = false)
+                                        }
+                                    )
+                                }
                             }
                         }
 
                         OutlinedTextField(
                             value = uiState.description,
-                            onValueChange = { vm.descriptionChange(it) },
+                            onValueChange = { vm.updateUiState(newDescription = it) },
                             label = { Text(stringResource(R.string.description)) },
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                                cursorColor = MaterialTheme.colorScheme.onSurface
                             ),
                             modifier = Modifier
                                 .padding(bottom = 50.dp)
@@ -112,7 +149,7 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
 
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(0.5f))
 
                 Button(
                     onClick = {},
@@ -137,12 +174,17 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
                 Spacer(modifier = Modifier.weight(0.5f))
             }
 
-            is AddGroupUiState.Loading -> {
+            is AddGroupUiState.Error -> {
 
             }
 
-            is AddGroupUiState.Error -> {
-
+            is AddGroupUiState.Loading -> {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CircularProgressIndicator()
+                }
             }
 
             is AddGroupUiState.Success -> {

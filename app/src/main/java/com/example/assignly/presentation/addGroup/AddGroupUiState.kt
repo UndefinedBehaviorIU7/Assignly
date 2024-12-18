@@ -1,7 +1,7 @@
 package com.example.assignly.presentation.addGroup
 
 import android.net.Uri
-import com.example.assignly.api.NetworkService
+import androidx.compose.ui.geometry.Size
 import com.example.assignly.api.models.User
 
 sealed class AddGroupUiState {
@@ -11,7 +11,8 @@ sealed class AddGroupUiState {
         val members: MutableList<User> = mutableListOf<User>(),
         val allUsers: List<User> = emptyList<User>(),
         val image: Uri? = null,
-        var menuExpanded: Boolean = false
+        var menuExpanded: Boolean = false,
+        var membersFieldPosition: Size = Size.Zero
     ): AddGroupUiState()
 
     data class Loading (
@@ -20,7 +21,8 @@ sealed class AddGroupUiState {
         val members: MutableList<User>,
         val allUsers: List<User>,
         val image: Uri?,
-        var menuExpanded: Boolean
+        var menuExpanded: Boolean,
+        var membersFieldPosition: Size
     ): AddGroupUiState()
 
     data class Error (
@@ -30,7 +32,8 @@ sealed class AddGroupUiState {
         val allUsers: List<User>,
         val image: Uri?,
         val errorMessage: String,
-        var menuExpanded: Boolean
+        var menuExpanded: Boolean,
+        var membersFieldPosition: Size
     ): AddGroupUiState()
 
     data class Success (

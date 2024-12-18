@@ -20,7 +20,9 @@ fun Form (value: String, label: String, isError: Boolean, lambda: (String) -> Un
             focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
             unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error
                 else MaterialTheme.colorScheme.background,
-            focusedTextColor = MaterialTheme.colorScheme.background
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+            cursorColor = MaterialTheme.colorScheme.onSurface
         ),
         readOnly = false,
         modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
