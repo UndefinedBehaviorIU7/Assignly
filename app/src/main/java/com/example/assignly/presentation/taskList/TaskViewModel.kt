@@ -89,5 +89,4 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             else -> Unit
         }
     }
-
 }

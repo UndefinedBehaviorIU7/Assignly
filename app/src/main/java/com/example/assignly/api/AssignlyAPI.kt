@@ -100,6 +100,6 @@ interface AssignlyAPI {
     @Multipart
     @GET("/get_image")
     suspend fun getImage (
-        @Query("path") path: RequestBody
-    ): Response
+        @Query("path") path: String
+    ): MultipartBody
 }

@@ -20,7 +20,7 @@ enum class Navigation(val route: String) {
     LOGIN("login"),
     SIGNUP("signup"),
     TASK_LIST("task_list"),
-    ADD_TASK("add_task")
+    ADD_TASK("add_task"),
     ADD_GROUP("add_group")
 }
 
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Navigation.ADD_TASK.toString()
+                    startDestination = Navigation.TASK_LIST.toString()
                 ) {
 
 
