@@ -100,9 +100,9 @@ fun deadlineFormat(deadline: String): List<String> {
 @Composable
 fun TasksList(
     navController: NavController,
+    groupId: Int,
     vm: TaskViewModel = viewModel(),
-    svm: SwipeViewModel = viewModel(),
-    groupId: Int
+    svm: SwipeViewModel = viewModel()
 ) {
 
     val limit = 10
@@ -151,7 +151,7 @@ fun TasksList(
                     contentDescription = "<",
                     modifier = Modifier
                         .size(50.dp)
-                        .clickable { navController.navigate(Navigation.LOGIN.toString()) },
+                        .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
                 )
                 Image(
                     painter = painterResource(R.drawable.group_default),

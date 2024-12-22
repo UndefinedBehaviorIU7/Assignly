@@ -67,7 +67,7 @@ fun GroupListScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
             is GroupUiState.All -> {
-                GroupList(groups = (uiState as GroupUiState.All).groups)
+                GroupList(navController, groups = (uiState as GroupUiState.All).groups)
             }
             is GroupUiState.Error -> {
                 Text(
@@ -91,23 +91,23 @@ fun GroupListScreen(
 }
 
 @Composable
-fun GroupList(groups: List<Group>) {
+fun GroupList(navController: NavController, groups: List<Group>) {
     LazyColumn(
         modifier = Modifier
     ) {
         items(groups.size) { index ->
-            GroupCard(groups[index])
+            GroupCard(navController, groups[index])
         }
     }
 }
 
 @Composable
-fun GroupCard(group: Group) {
+fun GroupCard(navController: NavController, group: Group) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        onClick = { }
+        onClick = { navController.navigate("${Navigation.TASK_LIST}/${group.id}") }
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
