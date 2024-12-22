@@ -33,8 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,8 +56,9 @@ import com.example.assignly.ui.theme.AssignlyTheme
 import com.example.assignly.ui.theme.Green_
 import com.example.assignly.ui.theme.Red_
 import com.example.assignly.ui.theme.Yellow_
+import kotlinx.coroutines.delay
 
-fun RingColor(status: Int): Color {
+fun ringColor(status: Int): Color {
     var color: Color = Color.Blue
     when (status) {
         0 -> color = Green_
@@ -101,17 +100,16 @@ fun deadlineFormat(deadline: String): List<String> {
 @Composable
 fun TasksList(
     navController: NavController,
+    groupId: Int,
     vm: TaskViewModel = viewModel(),
-    svm: SwipeViewModel = viewModel(),
-    token: String,
-    groupId: Int
+    svm: SwipeViewModel = viewModel()
 ) {
 
     val limit = 10
     val offset = 0
 
     LaunchedEffect(Unit) {
-        vm.fetchTasks(token, groupId, limit, offset)
+        vm.fetchTasks(groupId, limit, offset)
     }
 
     val swipeableState = rememberSwipeableState(initialValue = SwipeState.Default)
@@ -122,8 +120,16 @@ fun TasksList(
         200f to SwipeState.Right
     )
 
+
     LaunchedEffect(swipeableState.currentValue) {
-        svm.updateSwipeState(swipeableState.currentValue)
+        if (swipeableState.currentValue != SwipeState.Default) {
+            svm.updateSwipeState(swipeableState.currentValue)
+        }
+
+        if (swipeableState.currentValue == SwipeState.Left || swipeableState.currentValue == SwipeState.Right) {
+            delay(300L)
+            swipeableState.snapTo(SwipeState.Default)
+        }
     }
 
     Box(
@@ -131,10 +137,12 @@ fun TasksList(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
             .padding(top = 30.dp)
-            .swipeable(state = swipeableState,
+            .swipeable(
+                state = swipeableState,
                 anchors = anchors,
                 thresholds = { _, _ -> FractionalThreshold(0.3f) },
-                orientation = Orientation.Horizontal)
+                orientation = Orientation.Horizontal
+            )
     ) {
         Column(modifier = Modifier.padding(bottom = 20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -143,7 +151,7 @@ fun TasksList(
                     contentDescription = "<",
                     modifier = Modifier
                         .size(50.dp)
-                        .clickable { navController.navigate(Navigation.LOGIN.toString()) },
+                        .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
                 )
                 Image(
                     painter = painterResource(R.drawable.group_default),
@@ -182,23 +190,47 @@ fun TasksList(
 
                 is TaskUiState.All -> {
 
-                    when (val svmState = svm.swipeState.collectAsState().value)
-                    {
+                    when (val svmState = svm.swipeState.collectAsState().value) {
                         SwipeState.Left -> {
-                            svm.updateSwipeState(SwipeState.Default)
-                            vm.inProgress(token, groupId, limit, offset)
+                            if (svmState != SwipeState.Default) {
+                                svm.updateSwipeState(SwipeState.Default)
+                            }
+                            vm.inProgress(groupId, limit, offset)
                         }
+
                         SwipeState.Default -> {
-                            Row(modifier = Modifier.padding(top = 5.dp, start = 28.dp, end = 30.dp, bottom=10.dp)) {
+                            Row(
+                                modifier = Modifier.padding(
+                                    top = 5.dp,
+                                    start = 28.dp,
+                                    end = 30.dp,
+                                    bottom = 10.dp
+                                )
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .background(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .border(1.dp, color = MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(10.dp))
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.fetchTasks(token, groupId, limit, offset) }
+                                        .border(
+                                            1.dp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            shape = RoundedCornerShape(10.dp)
+                                        )
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable {
+                                            vm.fetchTasks(
+                                                groupId,
+                                                limit,
+                                                offset
+                                            )
+                                        }
                                 ) {
                                     Text(
                                         text = "All",
@@ -215,8 +247,19 @@ fun TasksList(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.inProgress(token, groupId, limit, offset) }
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable {
+                                            vm.inProgress(
+                                                groupId,
+                                                limit,
+                                                offset
+                                            )
+                                        }
                                 ) {
                                     Text(
                                         text = "In Progress",
@@ -233,8 +276,13 @@ fun TasksList(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.done(token, groupId, limit, offset) }
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable { vm.done(groupId, limit, offset) }
                                 ) {
                                     Text(
                                         text = "Done",
@@ -257,32 +305,53 @@ fun TasksList(
                                 }
                             }
                         }
+
                         SwipeState.Right -> {
-                            svm.updateSwipeState(SwipeState.Default)
+                            if (svmState != SwipeState.Default) {
+                                svm.updateSwipeState(SwipeState.Default)
+                            }
                         }
                     }
-
-
                 }
 
 
                 is TaskUiState.InProcess -> {
-                    when (val svmState = svm.swipeState.collectAsState().value)
-                    {
+                    when (val svmState = svm.swipeState.collectAsState().value) {
                         SwipeState.Right -> {
-                            svm.updateSwipeState(SwipeState.Default)
-                            vm.fetchTasks(token, groupId, limit, offset)
+                            if (svmState != SwipeState.Default) {
+                                svm.updateSwipeState(SwipeState.Default)
+                            }
+                            vm.fetchTasks(groupId, limit, offset)
                         }
+
                         SwipeState.Default -> {
-                            Row(modifier = Modifier.padding(top = 5.dp, start = 28.dp, end = 30.dp, bottom=10.dp)) {
+                            Row(
+                                modifier = Modifier.padding(
+                                    top = 5.dp,
+                                    start = 28.dp,
+                                    end = 30.dp,
+                                    bottom = 10.dp
+                                )
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .background(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.fetchTasks(token, groupId, limit, offset) }
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable {
+                                            vm.fetchTasks(
+                                                groupId,
+                                                limit,
+                                                offset
+                                            )
+                                        }
                                 ) {
                                     Text(
                                         text = "All",
@@ -299,9 +368,24 @@ fun TasksList(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .border(1.dp, color = MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(10.dp))
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.inProgress(token, groupId, limit, offset) }
+                                        .border(
+                                            1.dp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            shape = RoundedCornerShape(10.dp)
+                                        )
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable {
+                                            vm.inProgress(
+                                                groupId,
+                                                limit,
+                                                offset
+                                            )
+                                        }
                                 ) {
                                     Text(
                                         text = "In Progress",
@@ -318,8 +402,13 @@ fun TasksList(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.done(token, groupId, limit, offset) }
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable { vm.done(groupId, limit, offset) }
                                 ) {
                                     Text(
                                         text = "Done",
@@ -344,29 +433,52 @@ fun TasksList(
                         }
 
                         SwipeState.Left -> {
-                            vm.done(token, groupId, limit, offset)
+                            if (svmState != SwipeState.Default) {
+                                svm.updateSwipeState(SwipeState.Default)
+                            }
+                            vm.done(groupId, limit, offset)
                         }
                     }
 
                 }
 
                 is TaskUiState.Done -> {
-                    when (val svmState = svm.swipeState.collectAsState().value)
-                    {
+                    when (val svmState = svm.swipeState.collectAsState().value) {
                         SwipeState.Right -> {
-                            svm.updateSwipeState(SwipeState.Default)
-                            vm.inProgress(token, groupId, limit, offset)
+                            if (svmState != SwipeState.Default) {
+                                svm.updateSwipeState(SwipeState.Default)
+                            }
+                            vm.inProgress(groupId, limit, offset)
                         }
+
                         SwipeState.Default -> {
-                            Row(modifier = Modifier.padding(top = 5.dp, start = 28.dp, end = 30.dp, bottom=10.dp)) {
+                            Row(
+                                modifier = Modifier.padding(
+                                    top = 5.dp,
+                                    start = 28.dp,
+                                    end = 30.dp,
+                                    bottom = 10.dp
+                                )
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .background(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.fetchTasks(token, groupId, limit, offset) }
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable {
+                                            vm.fetchTasks(
+                                                groupId,
+                                                limit,
+                                                offset
+                                            )
+                                        }
                                 ) {
                                     Text(
                                         text = "All",
@@ -383,8 +495,19 @@ fun TasksList(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.inProgress(token, groupId, limit, offset) }
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable {
+                                            vm.inProgress(
+                                                groupId,
+                                                limit,
+                                                offset
+                                            )
+                                        }
                                 ) {
                                     Text(
                                         text = "In Progress",
@@ -401,9 +524,18 @@ fun TasksList(
                                             color = MaterialTheme.colorScheme.secondary,
                                             shape = RoundedCornerShape(10.dp)
                                         )
-                                        .border(1.dp, color = MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(10.dp))
-                                        .padding(top = 7.dp, bottom = 7.dp, start = 20.dp, end = 20.dp)
-                                        .clickable {   vm.done(token, groupId, limit, offset) }
+                                        .border(
+                                            1.dp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            shape = RoundedCornerShape(10.dp)
+                                        )
+                                        .padding(
+                                            top = 7.dp,
+                                            bottom = 7.dp,
+                                            start = 20.dp,
+                                            end = 20.dp
+                                        )
+                                        .clickable { vm.done(groupId, limit, offset) }
                                 ) {
                                     Text(
                                         text = "Done",
@@ -426,12 +558,13 @@ fun TasksList(
                                 }
                             }
                         }
+
                         SwipeState.Left -> {
-                            svm.updateSwipeState(SwipeState.Default)
+                            if (svmState != SwipeState.Default) {
+                                svm.updateSwipeState(SwipeState.Default)
+                            }
                         }
                     }
-
-
                 }
 
                 TaskUiState.Idle -> TODO()
@@ -493,7 +626,11 @@ fun DarkTaskPreview() {
 fun TaskPreview(task: Task, size: Int) {
     Box(
         modifier = Modifier
-            .border(1.dp, MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(20.dp))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(20.dp)
+            )
             .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(20.dp))
             .width(size.dp)
             .padding(10.dp),
@@ -541,7 +678,8 @@ fun TaskPreview(task: Task, size: Int) {
                         ) {
                             Text(
                                 text = item.tag,
-                                color = MaterialTheme.colorScheme.onSurface)
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                 }
@@ -557,7 +695,7 @@ fun TaskPreview(task: Task, size: Int) {
                 modifier = Modifier
                     .size(20.dp)
                     .padding(4.dp),
-                color = RingColor(task.status)
+                color = ringColor(task.status)
             )
         }
 
@@ -565,18 +703,18 @@ fun TaskPreview(task: Task, size: Int) {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .width(70.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(8.dp)
-                )
                 .border(
                     1.dp,
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     shape = RoundedCornerShape(8.dp)
+                )
+                .background(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.primary
                 )
         )
         {
-            Row(modifier = Modifier.background(MaterialTheme.colorScheme.primary))
+            Row()
             {
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally)
@@ -601,7 +739,7 @@ fun TaskPreview(task: Task, size: Int) {
                     }
 
                     HorizontalDivider(
-                        modifier = Modifier.padding(start=4.dp, end = 4.dp),
+                        modifier = Modifier.padding(start = 4.dp, end = 4.dp),
                         thickness = 1.dp,
                         color = MaterialTheme.colorScheme.tertiary
                     )
@@ -613,11 +751,8 @@ fun TaskPreview(task: Task, size: Int) {
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-
-
                 }
             }
-
         }
     }
 }

@@ -16,3 +16,5 @@ val MidGrayL_ = Color(0xFFB3B3B3)
 val Green_ = Color(0xFF55CB55)
 val Yellow_ = Color(0xFFDFDC3A)
 val Red_ = Color(0xFFF13F2A)
+
+val Active_ = Color(0xFF1A73E8)
