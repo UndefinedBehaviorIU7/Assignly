@@ -1,6 +1,7 @@
 package com.example.assignly.presentation.taskList
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
@@ -18,8 +19,11 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = TaskRepository(NetworkService.api)
 
+    private val sharedPref = getApplication<Application>()
+        .getSharedPreferences("auth", Context.MODE_PRIVATE)
+    val token = sharedPref.getString("token", "").toString()
 
-    fun fetchTasks(token: String, groupId: Int, limit: Int, offset: Int) {
+    fun fetchTasks(groupId: Int, limit: Int, offset: Int) {
         _uiState.value = TaskUiState.Loading
 
         viewModelScope.launch {
@@ -34,7 +38,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun inProgress(token: String, groupId: Int, limit: Int, offset: Int) {
+    fun inProgress(groupId: Int, limit: Int, offset: Int) {
         when (val current = _uiState.value) {
             is TaskUiState.All -> {
                 viewModelScope.launch {
@@ -62,7 +66,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun done(token: String, groupId: Int, limit: Int, offset: Int) {
+    fun done(groupId: Int, limit: Int, offset: Int) {
         when (val current = _uiState.value) {
             is TaskUiState.All -> {
                 viewModelScope.launch {

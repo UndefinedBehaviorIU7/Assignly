@@ -1,8 +1,6 @@
 package com.example.assignly.presentation.taskList
 
 import android.content.res.Configuration
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,8 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,7 +58,7 @@ import com.example.assignly.ui.theme.Red_
 import com.example.assignly.ui.theme.Yellow_
 import kotlinx.coroutines.delay
 
-fun RingColor(status: Int): Color {
+fun ringColor(status: Int): Color {
     var color: Color = Color.Blue
     when (status) {
         0 -> color = Green_
@@ -107,7 +102,6 @@ fun TasksList(
     navController: NavController,
     vm: TaskViewModel = viewModel(),
     svm: SwipeViewModel = viewModel(),
-    token: String,
     groupId: Int
 ) {
 
@@ -115,7 +109,7 @@ fun TasksList(
     val offset = 0
 
     LaunchedEffect(Unit) {
-        vm.fetchTasks(token, groupId, limit, offset)
+        vm.fetchTasks(groupId, limit, offset)
     }
 
     val swipeableState = rememberSwipeableState(initialValue = SwipeState.Default)
@@ -201,7 +195,7 @@ fun TasksList(
                             if (svmState != SwipeState.Default) {
                                 svm.updateSwipeState(SwipeState.Default)
                             }
-                            vm.inProgress(token, groupId, limit, offset)
+                            vm.inProgress(groupId, limit, offset)
                         }
 
                         SwipeState.Default -> {
@@ -232,7 +226,6 @@ fun TasksList(
                                         )
                                         .clickable {
                                             vm.fetchTasks(
-                                                token,
                                                 groupId,
                                                 limit,
                                                 offset
@@ -262,7 +255,6 @@ fun TasksList(
                                         )
                                         .clickable {
                                             vm.inProgress(
-                                                token,
                                                 groupId,
                                                 limit,
                                                 offset
@@ -290,7 +282,7 @@ fun TasksList(
                                             start = 20.dp,
                                             end = 20.dp
                                         )
-                                        .clickable { vm.done(token, groupId, limit, offset) }
+                                        .clickable { vm.done(groupId, limit, offset) }
                                 ) {
                                     Text(
                                         text = "Done",
@@ -329,7 +321,7 @@ fun TasksList(
                             if (svmState != SwipeState.Default) {
                                 svm.updateSwipeState(SwipeState.Default)
                             }
-                            vm.fetchTasks(token, groupId, limit, offset)
+                            vm.fetchTasks(groupId, limit, offset)
                         }
 
                         SwipeState.Default -> {
@@ -355,7 +347,6 @@ fun TasksList(
                                         )
                                         .clickable {
                                             vm.fetchTasks(
-                                                token,
                                                 groupId,
                                                 limit,
                                                 offset
@@ -390,7 +381,6 @@ fun TasksList(
                                         )
                                         .clickable {
                                             vm.inProgress(
-                                                token,
                                                 groupId,
                                                 limit,
                                                 offset
@@ -418,7 +408,7 @@ fun TasksList(
                                             start = 20.dp,
                                             end = 20.dp
                                         )
-                                        .clickable { vm.done(token, groupId, limit, offset) }
+                                        .clickable { vm.done(groupId, limit, offset) }
                                 ) {
                                     Text(
                                         text = "Done",
@@ -446,7 +436,7 @@ fun TasksList(
                             if (svmState != SwipeState.Default) {
                                 svm.updateSwipeState(SwipeState.Default)
                             }
-                            vm.done(token, groupId, limit, offset)
+                            vm.done(groupId, limit, offset)
                         }
                     }
 
@@ -458,7 +448,7 @@ fun TasksList(
                             if (svmState != SwipeState.Default) {
                                 svm.updateSwipeState(SwipeState.Default)
                             }
-                            vm.inProgress(token, groupId, limit, offset)
+                            vm.inProgress(groupId, limit, offset)
                         }
 
                         SwipeState.Default -> {
@@ -484,7 +474,6 @@ fun TasksList(
                                         )
                                         .clickable {
                                             vm.fetchTasks(
-                                                token,
                                                 groupId,
                                                 limit,
                                                 offset
@@ -514,7 +503,6 @@ fun TasksList(
                                         )
                                         .clickable {
                                             vm.inProgress(
-                                                token,
                                                 groupId,
                                                 limit,
                                                 offset
@@ -547,7 +535,7 @@ fun TasksList(
                                             start = 20.dp,
                                             end = 20.dp
                                         )
-                                        .clickable { vm.done(token, groupId, limit, offset) }
+                                        .clickable { vm.done(groupId, limit, offset) }
                                 ) {
                                     Text(
                                         text = "Done",
@@ -707,7 +695,7 @@ fun TaskPreview(task: Task, size: Int) {
                 modifier = Modifier
                     .size(20.dp)
                     .padding(4.dp),
-                color = RingColor(task.status)
+                color = ringColor(task.status)
             )
         }
 
