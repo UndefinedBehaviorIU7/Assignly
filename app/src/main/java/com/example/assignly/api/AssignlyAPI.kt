@@ -23,7 +23,7 @@ interface AssignlyAPI {
     @GET("/groups/")
     suspend fun getGroups (
         @Query("token") token: String
-    ): Group
+    ): List<Group>
 
     @GET("/tasks")
     suspend fun getTasks (

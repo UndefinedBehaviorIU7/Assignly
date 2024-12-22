@@ -63,7 +63,7 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
             contentDescription = "<",
             modifier = Modifier
                 .size(50.dp)
-                .clickable { navController.navigate(Navigation.LOGIN.toString()) }
+                .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) }
                 .weight(0.7f),
         )
 
@@ -298,7 +298,7 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
             }
 
             is AddGroupUiState.Success -> {
-                navController.navigate(Navigation.LOGIN.toString())
+                navController.navigate(Navigation.GROUP_LIST.toString())
             }
         }
     }
