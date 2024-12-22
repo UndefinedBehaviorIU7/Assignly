@@ -144,7 +144,7 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
 
                 is SignupUiState.Success -> {
-                    navController.navigate(Navigation.ADD_GROUP.toString())
+                    navController.navigate(Navigation.LOGIN.toString())
                 }
             }
         }

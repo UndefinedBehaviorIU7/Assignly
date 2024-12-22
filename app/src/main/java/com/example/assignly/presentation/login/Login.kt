@@ -110,7 +110,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
                 is LoginUiState.Success -> {
 
-                    navController.navigate(Navigation.ADD_GROUP.toString())
+                    navController.navigate(Navigation.GROUP_LIST.toString())
                 }
             }
         }
