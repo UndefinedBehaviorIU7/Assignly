@@ -4,6 +4,7 @@ import android.net.Uri
 import com.example.assignly.api.models.User
 import com.example.assignly.presentation.signup.SignupUiState
 import retrofit2.http.Query
+import androidx.compose.ui.geometry.Size
 
 sealed class AddTaskUIState {
     data class Idle (
@@ -12,9 +13,13 @@ sealed class AddTaskUIState {
         val name: String = "",
         val description: String = "",
         val summary: String = "",
-        val deadline: String = "",
+        val deadlinedata: String = "",
+        val deadlinetime: String = "",
         val status: Int = 0,
-        val members: List<User> = mutableListOf(),
+        val members: MutableList<User> = mutableListOf(),
+        var menuExpanded: Boolean = false,
+        var membersFieldPosition: Size = Size.Zero,
+        val allUsers: List<User> = emptyList<User>()
     ): AddTaskUIState()
 
     data class Error (
@@ -23,9 +28,15 @@ sealed class AddTaskUIState {
         val name: String,
         val description: String,
         val summary: String,
-        val deadline: String,
+        val deadlinedata: String = "",
+        val deadlinetime: String = "",
         val status: Int,
-        val members: List<User>
+        val members: MutableList<User>,
+        val errorMessage: String,
+        var errorField: String,
+        var menuExpanded: Boolean,
+        var membersFieldPosition: Size,
+        val allUsers: List<User>
     ): AddTaskUIState()
 
     data class Loading (
@@ -34,9 +45,17 @@ sealed class AddTaskUIState {
         val name: String,
         val description: String,
         val summary: String,
-        val deadline: String,
+        val deadlinedata: String = "",
+        val deadlinetime: String = "",
         val status: Int,
-        val members: List<User>
+        val members: MutableList<User>,
+        var menuExpanded: Boolean,
+        var membersFieldPosition: Size,
+        val allUsers: List<User>
+    ): AddTaskUIState()
+
+    data class Success (
+        val text : String
     ): AddTaskUIState()
 
 }
