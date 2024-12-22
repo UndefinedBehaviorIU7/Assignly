@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                         val token = "1"
                         val groupId = 21
                         val taskViewModel: TaskViewModel by viewModels()
-                        TasksList(navController = navController, token = token, groupId = groupId, vm = taskViewModel)
+                        TasksList(navController = navController, groupId = groupId, vm = taskViewModel)
                     }
 
                     composable(Navigation.ADD_GROUP.toString()) {

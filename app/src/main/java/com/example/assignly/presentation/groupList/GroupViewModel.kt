@@ -17,7 +17,7 @@ class GroupViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = GroupRepository(NetworkService.api)
 
-    val sharedPref = getApplication<Application>()
+    private val sharedPref = getApplication<Application>()
         .getSharedPreferences("auth", Context.MODE_PRIVATE)
     val token = sharedPref.getString("token", "")
 

@@ -1,7 +1,5 @@
 package com.example.assignly.presentation.groupList
 
-import android.app.Application
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,10 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.assignly.api.NetworkService
 import com.example.assignly.api.models.Group
 import com.example.assignly.presentation.Navigation
-import com.example.assignly.presentation.taskList.TaskRepository
+import com.example.assignly.presentation.taskList.TasksList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,7 +92,9 @@ fun GroupListScreen(
 
 @Composable
 fun GroupList(groups: List<Group>) {
-    LazyColumn() {
+    LazyColumn(
+        modifier = Modifier
+    ) {
         items(groups.size) { index ->
             GroupCard(groups[index])
         }
@@ -108,6 +107,7 @@ fun GroupCard(group: Group) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
+        onClick = { }
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
