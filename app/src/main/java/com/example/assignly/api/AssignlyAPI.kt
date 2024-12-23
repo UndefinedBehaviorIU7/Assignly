@@ -39,7 +39,7 @@ interface AssignlyAPI {
         @Part("login") login: RequestBody,
         @Part("tag") tag: RequestBody,
         @Part("password") password: RequestBody,
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part?
     ): Response
 
     @POST("/add_task")
@@ -74,7 +74,7 @@ interface AssignlyAPI {
     suspend fun addGroup (
         @Part("token") token: RequestBody,
         @Part("name") name: RequestBody,
-        @Part image: MultipartBody.Part,
+        @Part image: MultipartBody.Part?,
         @Part("description") description: RequestBody,
         @Part("members") members: RequestBody
     ): Response

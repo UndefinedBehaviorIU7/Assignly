@@ -2,6 +2,8 @@ package com.example.assignly.presentation.groupList
 
 import android.app.Application
 import android.content.Context
+import android.health.connect.datatypes.HeartRateRecord
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignly.api.NetworkService
@@ -36,12 +38,24 @@ class GroupViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun searchGroups(query: String) {
+        Log.d("SEARCH_START", "SEARCH STARTED")
         val currentState = _uiState.value
         if (currentState is GroupUiState.All) {
             val filteredGroups = currentState.groups.filter {
                 it.name.contains(query, ignoreCase = true)
             }
+            Log.d("SEARCH", filteredGroups.toString())
             _uiState.value = GroupUiState.All(filteredGroups)
+        }
+    }
+
+    fun getImage(path: String) {
+        viewModelScope.launch {
+            try {
+                val request = NetworkService.api.getImage(path)
+            } catch (e: HttpException) {
+                // TODO: возврат ошибки через стейты
+            }
         }
     }
 }

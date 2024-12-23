@@ -1,7 +1,6 @@
 package com.example.assignly.presentation.signup
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -132,7 +131,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                     password = current.password,
                     passwordRepeat = current.passwordRepeat,
                     image = current.image,
-                    errorMessage = "Fields shouldn't be blank"
+                    errorMessage = "fields shouldn't be blank"
                 )
                 return
             }
@@ -164,14 +163,12 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                             login = current.login.toRequestBody("text/plain".toMediaTypeOrNull()),
                             tag = current.tag.toRequestBody("text/plain".toMediaTypeOrNull()),
                             password = current.password.toRequestBody("text/plain".toMediaTypeOrNull()),
-                            image = imagePart!!
+                            image = imagePart
                         )
 
-                        _uiState.value = SignupUiState.Auth (
-                            login = current.login,
-                            password = current.password
+                        _uiState.value = SignupUiState.Success(
+                            successMessage = "User added successfully"
                         )
-                        auth()
                     }
                 } catch (e: HttpException) {
                     if (e.code() == 409) {
@@ -194,53 +191,6 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                         )
                     }
                 }
-            }
-        }
-    }
-
-    private fun auth() {
-        val current = _uiState.value
-        if (current is SignupUiState.Auth) {
-            try {
-                viewModelScope.launch {
-                    val request = NetworkService.api.authenticate(
-                        login = current.login,
-                        password = current.password
-                    )
-
-                    val sharedPref = getApplication<Application>()
-                        .getSharedPreferences("auth", Context.MODE_PRIVATE)
-                    sharedPref.edit()
-                        .putString("token", request.token)
-                        .putInt("id", request.id)
-                        .apply()
-
-                    _uiState.value = SignupUiState.Success (
-                        successMessage = "Signup success"
-                    )
-                }
-            } catch (e: HttpException) {
-                if (e.code() == 409) {
-                    _uiState.value = SignupUiState.Error (
-                        login = "",
-                        tag = "",
-                        password = "",
-                        passwordRepeat = "",
-                        image = null,
-                        errorMessage = "user already exist"
-                    )
-                } else {
-                    _uiState.value = SignupUiState.Error (
-                        login = "",
-                        tag = "",
-                        password = "",
-                        passwordRepeat = "",
-                        image = null,
-                        errorMessage = "no internet connection"
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState
             }
         }
     }
