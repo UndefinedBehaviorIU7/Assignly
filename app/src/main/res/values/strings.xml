@@ -18,6 +18,7 @@
     <string name="assign">Assign to</string>
     <string name="summary">Summary</string>
     <string name="description">Description</string>
-    <string name="deadlinetime">Deadline Data</string>
-    <string name="deadlinedata">Deadline Time</string>
+    <string name="deadlinetime">Deadline Time</string>
+    <string name="deadlinedata">Deadline Data</string>
+    <string name="submit">Submit</string>
 </resources>

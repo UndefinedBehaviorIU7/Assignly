@@ -44,14 +44,15 @@ interface AssignlyAPI {
 
     @POST("/add_task")
     suspend fun addTask (
+        @Query("token") token: String,
         @Query("group_id") groupId: Int,
-        @Query("owner_id") ownerId: Int,
+//        @Query("owner_id") ownerId: Int,
         @Query("name") name: String,
         @Query("description") description: String,
         @Query("summary") summary: String,
         @Query("deadline") deadline: String,
         @Query("status") status: Int,
-        @Query("members") members: List<User>
+        @Query("members") members: String
     ): Response
 
     @GET("user_by_id")

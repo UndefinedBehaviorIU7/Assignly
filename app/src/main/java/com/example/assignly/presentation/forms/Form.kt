@@ -4,11 +4,18 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.util.Log
+import android.util.Size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -31,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.example.assignly.R
 import java.util.Calendar
 import androidx.compose.ui.unit.dp
+import com.example.assignly.api.models.User
 
 @Composable
 fun Form (value: String, label: String, isError: Boolean, lambda: (String) -> Unit) {
@@ -94,10 +103,10 @@ fun FormAddData( value: String, label: String, isError: Boolean, lambda: (String
             focusedLabelColor = MaterialTheme.colorScheme.onSurface,
             cursorColor = MaterialTheme.colorScheme.onSurface
         ),
-        modifier = Modifier.padding(bottom = 10.dp),
+        modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
         trailingIcon = {
             IconButton(onClick = { showDatePicker = true }) {
-                Icon(Icons.Default.DateRange, contentDescription = "Выбрать дату")
+                Icon(painterResource(R.drawable.calendar), contentDescription = "Выбрать дату")
             }
         }
     )
@@ -108,7 +117,6 @@ fun FormAddData( value: String, label: String, isError: Boolean, lambda: (String
             LocalContext.current,
             { _, year, month, dayOfMonth ->
                 val formattedDate = String.format("%02d.%02d.%d", dayOfMonth, month + 1, year)
-               // Log.d("FormAddData", "Выбрана дата: $formattedDate")
                 lambda(formattedDate)
                 onValueChange(formattedDate)
                 showDatePicker = false
@@ -161,7 +169,7 @@ fun FormAddTime(value: String, label: String, isError: Boolean,
             focusedLabelColor = MaterialTheme.colorScheme.onSurface,
             cursorColor = MaterialTheme.colorScheme.onSurface
         ),
-        modifier = Modifier.padding(bottom = 10.dp),
+        modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
         trailingIcon = {
             IconButton(onClick = { showTimePicker = true }) {
                 Icon(Icons.Default.DateRange, contentDescription = "Выбрать время")
@@ -175,7 +183,6 @@ fun FormAddTime(value: String, label: String, isError: Boolean,
             LocalContext.current,
             { _, hourOfDay, minute ->
                 val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
-                Log.d("FormAddTime", "Выбрано время: $formattedTime")
                 lambda(formattedTime)
                 onValueChange(formattedTime)
                 showTimePicker = false
@@ -186,6 +193,54 @@ fun FormAddTime(value: String, label: String, isError: Boolean,
         ).show()
     }
 }
+
+//@Composable
+//fun FormMembers(
+//    value: String,
+//    isMenuExpanded: Boolean,
+//    onMenuToggle: () -> Unit,
+//    onDismissMenu: () -> Unit,
+//    allUsers: List<User>,
+//    onUserClick: (User) -> Unit
+//) {
+//    Box(modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()) {
+//        OutlinedTextField(
+//            value = value,
+//            onValueChange = {}, // Поле read-only, изменений не требуется
+//            label = { Text("members") },
+//            colors = OutlinedTextFieldDefaults.colors(
+//                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+//                unfocusedBorderColor = MaterialTheme.colorScheme.background,
+//                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+//                focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+//                cursorColor = MaterialTheme.colorScheme.onSurface
+//            ),
+//            trailingIcon = {
+//                Icon(
+//                    imageVector = if (isMenuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+//                    contentDescription = null,
+//                    modifier = Modifier.clickable { onMenuToggle() }
+//                )
+//            },
+//            readOnly = true,
+//            modifier = Modifier.fillMaxWidth()
+//        )
+//
+//        DropdownMenu(
+//            expanded = isMenuExpanded,
+//            onDismissRequest = { onDismissMenu() }
+//        ) {
+//            allUsers.forEach { user ->
+//                DropdownMenuItem(
+//                    text = { Text(user.tag) },
+//                    onClick = { onUserClick(user) }
+//                )
+//            }
+//        }
+//    }
+//}
+
+
 
 //@Composable
 //fun FormInt (value: Int, label: String, isError: Boolean, lambda: (Int) -> Unit) {
