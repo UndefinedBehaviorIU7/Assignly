@@ -130,7 +130,7 @@ class AddGroupViewModel(application: Application): AndroidViewModel(application)
                         token = token!!.toRequestBody(),
                         name = current.name.toRequestBody(),
                         description = current.description.toRequestBody(),
-                        image = imagePart!!,
+                        image = imagePart,
                         members = json.toRequestBody()
                     )
 

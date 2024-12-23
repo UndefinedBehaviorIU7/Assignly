@@ -25,10 +25,13 @@ import com.example.assignly.R
 import com.example.assignly.presentation.Navigation
 import com.example.assignly.presentation.forms.ButtonForm
 import com.example.assignly.presentation.forms.Form
+import com.example.assignly.presentation.signup.SignupUiState
 
 
 @Composable
 fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
+    val uiState = vm.uiState.collectAsState().value
+
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.secondary),
         contentAlignment = Alignment.Center,
@@ -37,13 +40,15 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.weight(0.7f))
 
-            Image(
-                painter = painterResource(R.drawable.assignly_text),
-                modifier = Modifier.size(280.dp).weight(1f),
-                contentDescription = ""
-            )
+            if (uiState !is LoginUiState.Success && uiState !is LoginUiState.Loading) {
+                Image(
+                    painter = painterResource(R.drawable.assignly_text),
+                    modifier = Modifier.size(280.dp).weight(1f),
+                    contentDescription = ""
+                )
+            }
 
-            when (val uiState = vm.uiState.collectAsState().value) {
+            when (uiState) {
                 is LoginUiState.Idle -> {
                     Column(
                         modifier = Modifier.weight(1.2f)

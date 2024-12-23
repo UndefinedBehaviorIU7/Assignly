@@ -28,11 +28,6 @@ sealed class SignupUiState {
         val errorMessage: String
     ): SignupUiState()
 
-    data class Auth (
-        val login: String,
-        val password: String
-    ): SignupUiState()
-
     data class Success (
         val successMessage: String
     ): SignupUiState()

@@ -38,6 +38,7 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
             vm.imageChange(uri)
         }
     )
+    val uiState = vm.uiState.collectAsState().value
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -46,12 +47,14 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.weight(0.2f))
 
-            Image(
-                painter = painterResource(R.drawable.assignly_text),
-                modifier = Modifier.size(280.dp).weight(1f),
-                contentDescription = ""
-            )
-            when (val uiState = vm.uiState.collectAsState().value) {
+            if (uiState !is SignupUiState.Success && uiState !is SignupUiState.Loading) {
+                Image(
+                    painter = painterResource(R.drawable.assignly_text),
+                    modifier = Modifier.size(280.dp).weight(1f),
+                    contentDescription = ""
+                )
+            }
+            when (uiState) {
                 is SignupUiState.Idle -> {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,6 +89,11 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
 
                 is SignupUiState.Error -> {
+                    Text(
+                        text = "Error: ${uiState.errorMessage}",
+                        color = Color.Red,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                    )
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.weight(2.5f).fillMaxWidth()
@@ -108,14 +116,6 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                         }
 
                         ImageForm(uiState.image, text = stringResource(R.string.select_image), lambda = { launcher.launch("image/*") })
-
-                        Spacer(modifier = Modifier.height(35.dp))
-                        Text(
-                            text = "Error: ${uiState.errorMessage}",
-                            color = Color.Red,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                        )
-                        Spacer(modifier = Modifier.height(35.dp))
                     }
 
                     ButtonForm(modifier = Modifier.weight(0.5f), buttonText = stringResource(R.string.signup),
@@ -126,15 +126,6 @@ fun Signup(navController: NavController, vm: SignupViewModel = viewModel()) {
                 }
 
                 is SignupUiState.Loading -> {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-
-                is SignupUiState.Auth -> {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()

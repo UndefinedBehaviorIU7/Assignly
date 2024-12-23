@@ -42,6 +42,7 @@ fun GroupListScreen(
             query = searchQuery,
             onQueryChange = { query ->
                 searchQuery = query
+                viewModel.searchGroups(searchQuery)
             },
             placeholder = { Text("Search Groups") },
             leadingIcon = {
@@ -49,6 +50,7 @@ fun GroupListScreen(
             },
             modifier = Modifier.fillMaxWidth(),
             onSearch = {
+                // TODO: переписать
                 viewModel.searchGroups(searchQuery)
             },
             active = searchQuery.isNotEmpty(),
@@ -56,6 +58,9 @@ fun GroupListScreen(
             content = {
                 if (searchQuery.isEmpty()) {
                     Text("Enter group name to search", style = TextStyle(fontStyle = FontStyle.Italic))
+                }
+                else {
+                    // TODO: дописать отрисовку
                 }
             }
         )
