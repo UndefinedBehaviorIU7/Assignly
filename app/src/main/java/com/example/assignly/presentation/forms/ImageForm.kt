@@ -16,16 +16,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.assignly.R
 
 @Composable
-fun ImageForm(imageUri: Uri?, lambda: () -> Unit) {
+fun ImageForm(imageUri: Uri?, lambda: () -> Unit, text: String) {
     Text(
-        stringResource(R.string.select_image),
+        text,
         fontSize = 20.sp,
         color = Color.DarkGray,
         modifier = Modifier.padding(bottom = 10.dp)
@@ -37,7 +36,7 @@ fun ImageForm(imageUri: Uri?, lambda: () -> Unit) {
                 painter = rememberAsyncImagePainter(imageUri),
                 contentDescription = "Selected Image",
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(150.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -47,7 +46,7 @@ fun ImageForm(imageUri: Uri?, lambda: () -> Unit) {
                 painter = painterResource(id = R.drawable.placeholder),
                 contentDescription = "Image Placeholder",
                 alignment = Alignment.Center,
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier.size(150.dp)
                     .clickable(onClick = lambda)
             )
         }

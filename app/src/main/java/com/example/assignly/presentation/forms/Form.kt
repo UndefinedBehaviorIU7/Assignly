@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.util.Log
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.assignly.R
 import java.util.Calendar
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun Form (value: String, label: String, isError: Boolean, lambda: (String) -> Unit) {
@@ -39,12 +41,13 @@ fun Form (value: String, label: String, isError: Boolean, lambda: (String) -> Un
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
             unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error
-            else MaterialTheme.colorScheme.background,
+                else MaterialTheme.colorScheme.background,
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
             focusedLabelColor = MaterialTheme.colorScheme.onSurface,
             cursorColor = MaterialTheme.colorScheme.onSurface
         ),
-        modifier = Modifier.padding(bottom = 10.dp)
+        readOnly = false,
+        modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
     )
 }
 
