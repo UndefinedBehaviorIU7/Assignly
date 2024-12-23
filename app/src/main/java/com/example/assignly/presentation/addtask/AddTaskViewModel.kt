@@ -271,6 +271,8 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
 
     fun createErrorState(
         current: AddTaskUIState.Idle,
+        errorMessage : String,
+        errorField : String
     ): AddTaskUIState.Error {
         return AddTaskUIState.Error(
             token = current.token,
@@ -286,45 +288,59 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
             membersFieldPosition = current.membersFieldPosition,
             menuExpanded = current.menuExpanded,
             allUsers = current.allUsers,
-            errorMessage = TODO(),
-            errorField = TODO(),
+            errorMessage = errorMessage,
+            errorField = errorField,
         )
     }
-    
+
     @OptIn(ExperimentalStdlibApi::class)
     fun addtask() {
         val current = _uiState.value
 
         if (current is AddTaskUIState.Idle) {
 
-            if (current.name.isBlank())
-            {
-                _uiState.value = createErrorState(current).copy(
+            if (current.name.isBlank()) {
+                _uiState.value = createErrorState(current = current,
                     errorMessage = "Name cannot be blank",
-                    errorField = "name"
-                )
-
+                    errorField = "name")
                 return
             }
 
-            if (current.description.isBlank())
-            {
-                _uiState.value = createErrorState(current).copy(
+            if (current.description.isBlank()) {
+                _uiState.value = createErrorState(current = current,
                     errorMessage = "Description cannot be blank",
-                    errorField = "description"
-                )
+                    errorField = "description")
                 return
             }
 
-            if (current.summary.isBlank())
-            {
-                _uiState.value = createErrorState(current).copy(
+            if (current.summary.isBlank()) {
+                _uiState.value = createErrorState(current = current,
                     errorMessage = "Summary cannot be blank",
-                    errorField = "summary"
-                )
+                    errorField = "summary")
                 return
             }
 
+            if (current.deadlinedata.isBlank() || !isDataСorrect(current.deadlinedata)) {
+                _uiState.value = createErrorState(current = current,
+                    errorMessage = "Incorrect date entered",
+                    errorField = "data")
+                return
+            }
+
+            if (current.deadlinetime.isBlank() || !isTimeСorrect(current.deadlinetime)) {
+                _uiState.value = createErrorState(current = current,
+                    errorMessage = "Incorrect date entered",
+                    errorField = "time")
+                return
+            }
+
+            if (current.members.isEmpty()) {
+                Log.d("errormember", current.members.toString())
+                _uiState.value = createErrorState(current = current,
+                    errorMessage = "Incorrect members entered",
+                    errorField = "members")
+                return
+            }
 
             _uiState.value = AddTaskUIState.Loading(
                 token = current.token,
@@ -344,11 +360,11 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
 
             viewModelScope.launch {
                 try {
-                    Log.d("qqqqq", current.name +
-                    " " + current.description +
-                    " " + current.summary +
-                    " " + dedlineGen(current.deadlinedata, current.deadlinetime) +
-                    " " + current.members)
+//                    Log.d("qqqqq", current.name +
+//                    " " + current.description +
+//                    " " + current.summary +
+//                    " " + dedlineGen(current.deadlinedata, current.deadlinetime) +
+//                    " " + current.members)
 
                     val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
                     val jsonAdapter: JsonAdapter<List<User>> = moshi.adapter<List<User>>()
@@ -369,6 +385,24 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
                     )
                 } catch (e: HttpException) {
                     Log.d("codeError", e.code().toString())
+                    if (e.code() == 401) {
+                        _uiState.value = createErrorState(current = current,
+                            errorMessage = "UNAUTHORIZED",
+                            errorField = "")
+                    } else if (e.code() == 404) {
+                        _uiState.value = createErrorState(current = current,
+                            errorMessage = "user not fount",
+                            errorField = "")
+                    } else if (e.code() == 400){
+                        _uiState.value = createErrorState(current = current,
+                            errorMessage = "BAD_REQUEST",
+                            errorField = "")
+                    } else {
+                        _uiState.value = createErrorState(current = current,
+                            errorMessage = "unknown error",
+                            errorField = "")
+                    }
+
                     _uiState.value = AddTaskUIState.Error(
                         token = current.token,
                         groupId = current.groupId,
@@ -383,7 +417,7 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
                         membersFieldPosition = current.membersFieldPosition,
                         menuExpanded = current.menuExpanded,
                         allUsers = current.allUsers,
-                        errorMessage = "q", // TODO: исправить
+                        errorMessage = "", // TODO: исправить
                         errorField = "q", // TODO: исправить
                     )
                 }
@@ -396,8 +430,48 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
         return members.joinToString(" ") { it.tag }
     }
 
-    fun dedlineGen(data: String, time: String): String{
+    fun dedlineGen(data: String, time: String): String {
         return  data + " " + time
+    }
+
+    fun isDataСorrect(str : String): Boolean {
+        val digitsOnly: String = str.replace(Regex("\\D"), "")
+        if (digitsOnly.length < 8)
+            return false
+
+        val chunks = digitsOnly.chunked(2)
+
+        var num = chunks[0].toIntOrNull()
+        if (num == null || num !in 1..31)
+            return false
+
+        num = chunks[1].toIntOrNull()
+        if (num == null || num !in 1..12)
+            return false
+
+        num = (chunks[2] + chunks[3]).toIntOrNull()
+        if (num == null || num < 2023)
+            return false
+
+        return true
+    }
+
+    fun isTimeСorrect(str : String): Boolean {
+        val digitsOnly: String = str.replace(Regex("\\D"), "")
+        if (digitsOnly.length < 4)
+            return false
+
+        val chunks = digitsOnly.chunked(2)
+
+        var num = chunks[0].toIntOrNull()
+        if (num == null || num !in 0..23)
+            return false
+
+        num = chunks[1].toIntOrNull()
+        if (num == null || num !in 0..59)
+            return false
+
+        return true
     }
 
 //    fun isValidFutureDate(date: String, time: String): Boolean {

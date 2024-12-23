@@ -8,6 +8,7 @@ import retrofit2.http.Query
 import androidx.compose.ui.geometry.Size
 
 sealed class AddTaskUIState {
+
     data class Idle (
         val token: String = "",
         val groupId: Int = 0,

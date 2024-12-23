@@ -61,6 +61,114 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
 import androidx.compose.material3.Text as Text
 
+@Composable
+fun MemberField(uiState: AddTaskUIState, vm: AddTaskViewModel) {
+    if (uiState is AddTaskUIState.Idle) {
+        Box(modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()) {
+            OutlinedTextField(
+                value = vm.membersToString(uiState.members),
+                onValueChange = { vm.membersChange(newMembers = uiState.members) },
+                label = { Text(text = "members") },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                    cursorColor = MaterialTheme.colorScheme.onSurface
+                ),
+                trailingIcon = {
+                    Icon(
+                        imageVector = if (uiState.menuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                        contentDescription = "arrow",
+                        modifier = Modifier.clickable { vm.updateUIState(newMenuExtended = !uiState.menuExpanded) }
+                    )
+                },
+                readOnly = true,
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        uiState.membersFieldPosition = coordinates.size.toSize()
+                    }
+            )
+
+            DropdownMenu(
+                expanded = uiState.menuExpanded,
+                onDismissRequest = { vm.updateUIState(newMenuExtended = false) },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { uiState.membersFieldPosition.width.toDp() })
+                    .height(300.dp)
+            ) {
+                uiState.allUsers.forEach { user ->
+                    DropdownMenuItem(
+                        text = { Text(text = user.tag) },
+                        onClick = {
+                            if (user !in uiState.members) {
+                                uiState.members.add(user)
+                            } else {
+                                uiState.members.remove(user)
+                            }
+                            vm.updateUIState(newMenuExtended = false)
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    if (uiState is AddTaskUIState.Error) {
+        Box(modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()) {
+            OutlinedTextField(
+                value = vm.membersToString(uiState.members),
+                onValueChange = { vm.membersChange(newMembers = uiState.members) },
+                label = { Text(text = "members") },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.error,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                    cursorColor = MaterialTheme.colorScheme.onSurface
+                ),
+                trailingIcon = {
+                    Icon(
+                        imageVector = if (uiState.menuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                        contentDescription = "arrow",
+                        modifier = Modifier.clickable { vm.updateUIState(newMenuExtended = !uiState.menuExpanded) }
+                    )
+                },
+                readOnly = true,
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        uiState.membersFieldPosition = coordinates.size.toSize()
+                    }
+            )
+
+            DropdownMenu(
+                expanded = uiState.menuExpanded,
+                onDismissRequest = { vm.updateUIState(newMenuExtended = false) },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { uiState.membersFieldPosition.width.toDp() })
+                    .height(300.dp)
+            ) {
+                uiState.allUsers.forEach { user ->
+                    DropdownMenuItem(
+                        text = { Text(text = user.tag) },
+                        onClick = {
+                            if (user !in uiState.members) {
+                                uiState.members.add(user)
+                            } else {
+                                uiState.members.remove(user)
+                            }
+                            vm.updateUIState(newMenuExtended = false)
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
@@ -77,7 +185,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                 is AddTaskUIState.Idle -> {
                     Column(
                         modifier = Modifier
-                            .weight(1.2f) // Убедился, что этот элемент занимает пропорционально правильное место.
+                            .weight(1.3f)
                             .padding(horizontal = 15.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -94,10 +202,10 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                         FormAddData(value = uiState.deadlinedata, label = stringResource(R.string.deadlinedata),
                             isError = false, lambda = { vm.updateUIState(newDeadlineData = it) })
 
-                        FormAddTime(value = uiState.deadlinedata, label = stringResource(R.string.deadlinetime),
+                        FormAddTime(value = uiState.deadlinetime, label = stringResource(R.string.deadlinetime),
                             isError = false, lambda = { vm.updateUIState(newDeadlineTime = it) })
 
-                        Box(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()) {
                             OutlinedTextField(
                                 value = vm.membersToString(uiState.members),
                                 onValueChange = { vm.membersChange(newMembers = uiState.members) },
@@ -121,7 +229,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                                     .padding(bottom = 10.dp)
                                     .fillMaxWidth()
                                     .onGloballyPositioned { coordinates ->
-                                        uiState.membersFieldPosition= coordinates.size.toSize()
+                                        uiState.membersFieldPosition = coordinates.size.toSize()
                                     }
                             )
 
@@ -129,7 +237,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                                 expanded = uiState.menuExpanded,
                                 onDismissRequest = { vm.updateUIState(newMenuExtended = false) },
                                 modifier = Modifier
-                                    .width(with(LocalDensity.current){uiState.membersFieldPosition.width.toDp()})
+                                    .width(with(LocalDensity.current) { uiState.membersFieldPosition.width.toDp() })
                                     .height(300.dp)
                             ) {
                                 uiState.allUsers.forEach { user ->
@@ -148,7 +256,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                             }
                         }
 
-                        Spacer(modifier = Modifier.weight(0.6f))
+//                        Spacer(modifier = Modifier.weight(0.6f))
 
 
                     }
@@ -157,7 +265,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                 is AddTaskUIState.Error -> {
                     Column(
                         modifier = Modifier
-                            .weight(1.3f) // Отрегулировал пропорции.
+                            .weight(1.3f)
                             .padding(horizontal = 15.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -172,16 +280,72 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                             isError = if (uiState.errorField == "summary") true else false, lambda = { vm.summaryChange(it) })
 
                         FormAddData(value = uiState.deadlinedata, label = stringResource(R.string.deadlinedata),
-                            isError = if (uiState.errorField == "deadlinedata") true else false, lambda = { vm.deadlinedataChange(it) })
+                            isError = if (uiState.errorField == "data") true else false, lambda = { vm.deadlinedataChange(it) })
 
-                        FormAddTime(value = uiState.deadlinedata, label = stringResource(R.string.deadlinetime),
-                            isError = if (uiState.errorField == "deadlinetime") true else false, lambda = { vm.deadlinetimeChange(it) })
+                        FormAddTime(value = uiState.deadlinetime, label = stringResource(R.string.deadlinetime),
+                            isError = if (uiState.errorField == "time") true else false, lambda = { vm.deadlinetimeChange(it) })
 
-                        Spacer(modifier = Modifier.weight(0.6f))
+                        Box(modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()) {
+                            OutlinedTextField(
+                                value = vm.membersToString(uiState.members),
+                                onValueChange = { vm.membersChange(newMembers = uiState.members) },
+                                label = { Text(text = "members") },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                                    unfocusedBorderColor = if (uiState.errorField == "members") MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.background,
+                                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                                    cursorColor = MaterialTheme.colorScheme.onSurface
+                                ),
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = if (uiState.menuExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                                        contentDescription = "arrow",
+                                        modifier = Modifier.clickable { vm.updateUIState(newMenuExtended = !uiState.menuExpanded) }
+                                    )
+                                },
+                                readOnly = true,
+                                modifier = Modifier
+                                    .padding(bottom = 10.dp)
+                                    .fillMaxWidth()
+                                    .onGloballyPositioned { coordinates ->
+                                        uiState.membersFieldPosition = coordinates.size.toSize()
+                                    }
+                            )
+
+                            DropdownMenu(
+                                expanded = uiState.menuExpanded,
+                                onDismissRequest = { vm.updateUIState(newMenuExtended = false) },
+                                modifier = Modifier
+                                    .width(with(LocalDensity.current) { uiState.membersFieldPosition.width.toDp() })
+                                    .height(300.dp)
+                            ) {
+                                uiState.allUsers.forEach { user ->
+                                    DropdownMenuItem(
+                                        text = { Text(text = user.tag) },
+                                        onClick = {
+                                            if (user !in uiState.members) {
+                                                uiState.members.add(user)
+                                            } else {
+                                                uiState.members.remove(user)
+                                            }
+                                            vm.updateUIState(newMenuExtended = false)
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        Text(
+                            text = "Error: ${uiState.errorMessage}",
+                            color = Color.Red,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                                .weight(0.5f),
+                        )
+
+//                        Spacer(modifier = Modifier.weight(0.6f))
                     }
                 }
-
-
 
                 is AddTaskUIState.Loading -> {
                     Box(
@@ -193,7 +357,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                 }
 
                 is AddTaskUIState.Success -> {
-                    Log.d("codeError", "ok")
+                    Log.d("ok1234","ok")
                     navController.navigate("task_list")
                     Text(uiState.text)
                 }
@@ -203,7 +367,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
 
             Column ( horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(0.5f).fillMaxWidth()) {
-                Spacer(modifier = Modifier.weight(0.6f))
+                Spacer(modifier = Modifier.weight(0.5f))
                 Button(
                     onClick = { vm.addtask() },
                     contentPadding = PaddingValues(
@@ -218,7 +382,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text (
-                        text = stringResource(R.string.signup),
+                        text = stringResource(R.string.submit),
                         fontSize = 25.sp
                     )
                 }
@@ -227,4 +391,6 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
         }
     }
 }
+
+
 
