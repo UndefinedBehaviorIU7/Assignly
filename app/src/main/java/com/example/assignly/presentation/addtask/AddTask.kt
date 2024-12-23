@@ -1,6 +1,7 @@
 package com.example.assignly.presentation.addtask
 
 import android.app.DatePickerDialog
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -82,19 +83,19 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                     ) {
 
                         Form (value = uiState.name, label = stringResource(R.string.title),
-                            isError = false, lambda = { vm.nameChange(it) })
+                            isError = false, lambda = { vm.updateUIState(newName = it) })
 
                         Form (value = uiState.description, label = stringResource(R.string.description),
-                            isError = false, lambda = { vm.descriptionChange(it) })
+                            isError = false, lambda = { vm.updateUIState(newDescription = it) })
 
                         Form (value = uiState.summary, label = stringResource(R.string.summary),
-                            isError = false, lambda = { vm.summaryChange(it) })
+                            isError = false, lambda = { vm.updateUIState(newSummary = it) })
 
                         FormAddData(value = uiState.deadlinedata, label = stringResource(R.string.deadlinedata),
-                            isError = false, lambda = { vm.deadlinedataChange(it) })
+                            isError = false, lambda = { vm.updateUIState(newDeadlineData = it) })
 
                         FormAddTime(value = uiState.deadlinedata, label = stringResource(R.string.deadlinetime),
-                            isError = false, lambda = { vm.deadlinetimeChange(it) })
+                            isError = false, lambda = { vm.updateUIState(newDeadlineTime = it) })
 
                         Box(modifier = Modifier.fillMaxWidth()) {
                             OutlinedTextField(
@@ -192,6 +193,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
                 }
 
                 is AddTaskUIState.Success -> {
+                    Log.d("codeError", "ok")
                     navController.navigate("task_list")
                     Text(uiState.text)
                 }

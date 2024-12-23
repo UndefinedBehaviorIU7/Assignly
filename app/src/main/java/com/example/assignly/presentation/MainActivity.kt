@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Navigation.ADD_TASK.toString()
+                    startDestination = Navigation.LOGIN.toString()
                 ) {
 
 

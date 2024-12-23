@@ -1,5 +1,6 @@
 package com.example.assignly.presentation.addtask
 
+import android.media.session.MediaSession.Token
 import android.net.Uri
 import com.example.assignly.api.models.User
 import com.example.assignly.presentation.signup.SignupUiState
@@ -8,6 +9,7 @@ import androidx.compose.ui.geometry.Size
 
 sealed class AddTaskUIState {
     data class Idle (
+        val token: String = "",
         val groupId: Int = 0,
         val ownerId: Int = 0,
         val name: String = "",
@@ -23,6 +25,7 @@ sealed class AddTaskUIState {
     ): AddTaskUIState()
 
     data class Error (
+        val token: String,
         val groupId: Int,
         val ownerId: Int,
         val name: String,
@@ -40,6 +43,7 @@ sealed class AddTaskUIState {
     ): AddTaskUIState()
 
     data class Loading (
+        val token: String,
         val groupId: Int,
         val ownerId: Int,
         val name: String,
