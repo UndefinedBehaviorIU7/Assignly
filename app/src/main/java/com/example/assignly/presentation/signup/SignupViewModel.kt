@@ -28,7 +28,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
 
             is SignupUiState.Error -> {
                 _uiState.value = SignupUiState.Idle(
-                    login = current.login,
+                    login = newLogin,
                     tag = current.tag,
                     password = current.password,
                     passwordRepeat = current.passwordRepeat,
@@ -49,7 +49,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
             is SignupUiState.Error -> {
                 _uiState.value = SignupUiState.Idle(
                     login = current.login,
-                    tag = current.tag,
+                    tag = newTag,
                     password = current.password,
                     passwordRepeat = current.passwordRepeat,
                     image = current.image
@@ -70,7 +70,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                 _uiState.value = SignupUiState.Idle(
                     login = current.login,
                     tag = current.tag,
-                    password = current.password,
+                    password = newPassword,
                     passwordRepeat = current.passwordRepeat,
                     image = current.image
                 )
@@ -91,7 +91,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                     login = current.login,
                     tag = current.tag,
                     password = current.password,
-                    passwordRepeat = current.passwordRepeat,
+                    passwordRepeat = newPasswordRepeat,
                     image = current.image
                 )
             }
@@ -112,7 +112,7 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                     tag = current.tag,
                     password = current.password,
                     passwordRepeat = current.passwordRepeat,
-                    image = current.image
+                    image = newImage
                 )
             }
 

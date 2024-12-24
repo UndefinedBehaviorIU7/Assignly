@@ -22,7 +22,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
 
             is LoginUiState.Error -> {
                 _uiState.value = LoginUiState.Idle(
-                    login = current.login,
+                    login = newLogin,
                     password = current.password
                 )
             }
@@ -40,7 +40,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
             is LoginUiState.Error -> {
                 _uiState.value = LoginUiState.Idle(
                     login = current.login,
-                    password = current.password,
+                    password = newPassword,
                 )
             }
 
@@ -113,7 +113,7 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                     _uiState.value = LoginUiState.Error(
                         login = current.login,
                         password = current.password,
-                        errorMessage = "no internet connection"
+                        errorMessage = "server error"
                     )
                 }
             }
