@@ -75,7 +75,19 @@ fun TaskInfo(navController: NavController,
                         .padding(horizontal = 10.dp, vertical = 10.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
+                    Image(
+                        painter = painterResource(R.drawable.arrow_left),
+                        contentDescription = "<",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
+                    )
+                    Text(text = "Task name")
                     Text(text = (uiState as TaskInfoUiState.Idle).task.name)
+                    Text(text = "Task summary")
+                    Text(text = (uiState as TaskInfoUiState.Idle).task.summary)
+                    Text(text = "Task description")
+                    Text(text = (uiState as TaskInfoUiState.Idle).task.description)
                 }
             }
         }

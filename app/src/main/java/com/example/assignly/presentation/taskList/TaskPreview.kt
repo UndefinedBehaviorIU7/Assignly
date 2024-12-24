@@ -721,7 +721,7 @@ fun TaskPreview(navController: NavController, viewModel: TaskViewModel, task: Ta
             )
             .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(20.dp))
             .width(size.dp)
-            .clickable { viewModel.sendTask(task.id); navController.navigate(Navigation.ADD_GROUP.toString()) }
+            .clickable { viewModel.sendTask(task.id); navController.navigate(Navigation.TASK_INFO.toString()) }
             .padding(10.dp),
     ) {
         Box(

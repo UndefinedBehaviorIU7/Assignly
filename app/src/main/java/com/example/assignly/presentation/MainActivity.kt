@@ -19,6 +19,7 @@ import com.example.assignly.ui.theme.AssignlyTheme
 import com.example.assignly.presentation.addtask.AddTask
 import com.example.assignly.presentation.groupList.GroupListScreen
 import com.example.assignly.presentation.infoGroup.infoGroup
+import com.example.assignly.presentation.taskInfo.TaskInfo
 
 enum class Navigation(val route: String) {
     LOGIN("login"),
@@ -89,7 +90,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(Navigation.TASK_INFO.toString()) {
-                        AddGroup(navController = navController)
+                        TaskInfo(navController = navController)
                     }
 
                     composable(Navigation.ADD_GROUP.toString()) {
