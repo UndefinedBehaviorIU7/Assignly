@@ -97,4 +97,12 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             else -> Unit
         }
     }
+
+    fun sendTask(taskId: Int) {
+        val sharedPref = getApplication<Application>()
+            .getSharedPreferences("auth", Context.MODE_PRIVATE)
+        sharedPref.edit()
+            .putInt("taskId", taskId)
+            .apply()
+    }
 }

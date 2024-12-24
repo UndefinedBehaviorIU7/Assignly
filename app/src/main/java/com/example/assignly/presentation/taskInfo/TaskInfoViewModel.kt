@@ -11,14 +11,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class TaskInfoViewModel(application: Application, taskId: Int): AndroidViewModel(application) {
+class TaskInfoViewModel(application: Application): AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<TaskInfoUiState>(TaskInfoUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val id = taskId
     private val sharedPref = getApplication<Application>()
         .getSharedPreferences("auth", Context.MODE_PRIVATE)
     val token = sharedPref.getString("token", "")
+
+    val taskId = sharedPref.getInt("taskId", 0)
+    private val id = taskId
 
     suspend fun fetchTasks(): Task? {
         try {
@@ -31,6 +33,7 @@ class TaskInfoViewModel(application: Application, taskId: Int): AndroidViewModel
 
     init {
         viewModelScope.launch {
+
             val task = fetchTasks()
             if (task != null) {
                 _uiState.value = TaskInfoUiState.Idle(

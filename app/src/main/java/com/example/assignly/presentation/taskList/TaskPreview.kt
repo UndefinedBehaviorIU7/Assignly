@@ -305,7 +305,7 @@ fun TasksList(
                                 contentPadding = PaddingValues(10.dp)
                             ) {
                                 items(uiState.tasks) { task ->
-                                    TaskPreview(task, 380)
+                                    TaskPreview(navController, vm, task, 380)
                                 }
                             }
                         }
@@ -473,7 +473,7 @@ fun TasksList(
                             contentPadding = PaddingValues(10.dp)
                         ) {
                             items(uiState.tasks) { task ->
-                                TaskPreview(task, 380)
+                                TaskPreview(navController, vm, task, 380)
                             }
                         }
                     }
@@ -642,7 +642,7 @@ fun TasksList(
                         contentPadding = PaddingValues(10.dp)
                     ) {
                         items(uiState.tasks) { task ->
-                            TaskPreview(task, 380)
+                            TaskPreview(navController, vm, task, 380)
                         }
                     }
                 }
@@ -691,25 +691,25 @@ val taskPrev: Task = Task(
     members = mutableListOf<User>(user_1, user_2, user_3, user_4)
 )
 
-@Preview(showSystemUi = false, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-fun LightTaskPreview() {
-    AssignlyTheme(darkTheme = false, dynamicColor = false) {
-        TaskPreview(task = taskPrev, size = 380)
-    }
-}
-
-@Preview(showSystemUi = false, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun DarkTaskPreview() {
-    AssignlyTheme(darkTheme = true, dynamicColor = false) {
-        TaskPreview(task = taskPrev, size = 380)
-    }
-}
+//@Preview(showSystemUi = false, uiMode = Configuration.UI_MODE_NIGHT_NO)
+//@Composable
+//fun LightTaskPreview() {
+//    AssignlyTheme(darkTheme = false, dynamicColor = false) {
+//        TaskPreview(task = taskPrev, size = 380)
+//    }
+//}
+//
+//@Preview(showSystemUi = false, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun DarkTaskPreview() {
+//    AssignlyTheme(darkTheme = true, dynamicColor = false) {
+//        TaskPreview(task = taskPrev, size = 380)
+//    }
+//}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TaskPreview(task: Task, size: Int) {
+fun TaskPreview(navController: NavController, viewModel: TaskViewModel, task: Task, size: Int) {
     Box(
         modifier = Modifier
             .border(
@@ -719,6 +719,7 @@ fun TaskPreview(task: Task, size: Int) {
             )
             .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(20.dp))
             .width(size.dp)
+            .clickable { viewModel.sendTask(task.id); navController.navigate(Navigation.ADD_GROUP.toString()) }
             .padding(10.dp),
     ) {
         Box(

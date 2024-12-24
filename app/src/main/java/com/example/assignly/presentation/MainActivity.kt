@@ -27,7 +27,8 @@ enum class Navigation(val route: String) {
     ADD_TASK("add_task"),
     ADD_GROUP("add_group"),
     GROUP_LIST("group_list"),
-    INFO_GROUP("info_group")
+    INFO_GROUP("info_group"),
+    TASK_INFO("task_info")
 }
 
 @ExperimentalStdlibApi
@@ -78,6 +79,10 @@ class MainActivity : ComponentActivity() {
                     ) { backStackEntry ->
                         val groupId = backStackEntry.arguments?.getInt("groupId")
                         TasksList(navController = navController, groupId = groupId!!)
+                    }
+
+                    composable(Navigation.TASK_INFO.toString()) {
+                        AddGroup(navController = navController)
                     }
 
                     composable(Navigation.ADD_GROUP.toString()) {
