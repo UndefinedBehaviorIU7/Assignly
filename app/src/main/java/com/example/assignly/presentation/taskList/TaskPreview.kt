@@ -1,6 +1,7 @@
 package com.example.assignly.presentation.taskList
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -180,7 +181,7 @@ fun TasksList(
 
                         Text(
                             modifier = Modifier
-                                .clickable { "${Navigation.INFO_GROUP}/${uiState.group.id}" }
+                                .clickable { navController.navigate("${Navigation.INFO_GROUP}/${uiState.group.id}/${vm.token}") }
                                 .padding(start = 10.dp),
                             text = uiState.group.name,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -321,10 +322,11 @@ fun TasksList(
                             .align(Alignment.End)
                             .padding(top = 15.dp, end = 15.dp)
                     ) {
+
                         Image(
                             painter = painterResource(R.drawable.plus),
                             contentDescription = "+",
-                            modifier = Modifier.size(30.dp).clickable { "${Navigation.ADD_TASK}/${uiState.group.id}/${vm.token}" }
+                            modifier = Modifier.size(30.dp).clickable { navController.navigate("${Navigation.ADD_TASK}/${uiState.group.id}/${vm.token}") }
                         )
                     }
                 }
@@ -348,7 +350,7 @@ fun TasksList(
 
                         Text(
                             modifier = Modifier
-                                .clickable { "${Navigation.INFO_GROUP}/${uiState.group.id}" }
+                                .clickable { navController.navigate("${Navigation.INFO_GROUP}/${uiState.group.id}/${vm.token}") }
                                 .padding(start = 10.dp),
                             text = uiState.group.name,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -493,7 +495,7 @@ fun TasksList(
                         Image(
                             painter = painterResource(R.drawable.plus),
                             contentDescription = "+",
-                            modifier = Modifier.size(30.dp).clickable { "${Navigation.ADD_TASK}/${uiState.group.id}" }
+                            modifier = Modifier.size(30.dp).clickable { navController.navigate("${Navigation.ADD_TASK}/${uiState.group.id}/${vm.token}") }
                         )
                     }
 
@@ -518,7 +520,7 @@ fun TasksList(
 
                     Text(
                         modifier = Modifier
-                            .clickable { "${Navigation.INFO_GROUP}/${uiState.group.id}" }
+                            .clickable { navController.navigate("${Navigation.INFO_GROUP}/${uiState.group.id}/${vm.token}") }
                             .padding(start = 10.dp),
                         text = uiState.group.name,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -661,7 +663,7 @@ fun TasksList(
                     Image(
                         painter = painterResource(R.drawable.plus),
                         contentDescription = "+",
-                        modifier = Modifier.size(30.dp).clickable { "${Navigation.ADD_TASK}/${uiState.group.id}" }
+                        modifier = Modifier.size(30.dp).clickable { navController.navigate("${Navigation.ADD_TASK}/${uiState.group.id}/${vm.token}") }
                     )
                 }
         }

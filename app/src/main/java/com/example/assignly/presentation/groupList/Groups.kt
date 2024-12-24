@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -41,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.example.assignly.R
 import com.example.assignly.api.models.Group
 import com.example.assignly.presentation.Navigation
@@ -82,6 +80,7 @@ fun GroupListScreen(
                     contentDescription = "Open Menu",
                     modifier = Modifier
                         .clickable { isDropdownMenuExpanded = !isDropdownMenuExpanded }
+                        .padding(top = 28.dp, start = 10.dp)
                 )
 
                 DropdownMenu(

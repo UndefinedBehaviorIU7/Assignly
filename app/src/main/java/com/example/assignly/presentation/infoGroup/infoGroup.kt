@@ -1,6 +1,8 @@
 package com.example.assignly.presentation.infoGroup
 
+import android.app.Application
 import android.app.DatePickerDialog
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -70,6 +72,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.toSize
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.wear.compose.material.FractionalThreshold
 import androidx.wear.compose.material.swipeable
 import com.example.assignly.presentation.taskList.SwipeState
@@ -80,7 +84,20 @@ import com.example.assignly.presentation.infoGroup.infoGroupUIState
 import com.example.assignly.presentation.infoGroup.infoGroupViewModel
 
 @Composable
-fun infoGroup(navController: NavController, vm: infoGroupViewModel = viewModel()) {
+fun infoGroup(navController: NavController, groupId: Int, token: String) {
+    val context = LocalContext.current
+    val vm: infoGroupViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return infoGroupViewModel(
+                    application = context.applicationContext as Application,
+                    groupId = groupId,
+                    token = token
+                ) as T
+            }
+        }
+    )
+
     when (val uiState = vm.uiState.collectAsState().value)
     {
         is infoGroupUIState.Idle -> {
@@ -103,7 +120,7 @@ fun infoGroup(navController: NavController, vm: infoGroupViewModel = viewModel()
                             contentDescription = "<",
                             modifier = Modifier
                                 .size(50.dp)
-                                .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
+                                .clickable { navController.navigate("${Navigation.TASK_LIST}/${groupId}") },
                         )
                         Image(
                             painter = painterResource(R.drawable.group_default),
