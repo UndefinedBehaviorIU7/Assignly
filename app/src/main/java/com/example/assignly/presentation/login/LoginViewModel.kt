@@ -51,6 +51,13 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
     fun auth() {
         val current = _uiState.value
 
+        if (current is LoginUiState.Error) {
+            _uiState.value = LoginUiState.Idle(
+                login = current.login,
+                password = current.password,
+            )
+        }
+
         if (current is LoginUiState.Idle) {
             if (current.login.isBlank() || current.password.isBlank()) {
                 _uiState.value = LoginUiState.Error(

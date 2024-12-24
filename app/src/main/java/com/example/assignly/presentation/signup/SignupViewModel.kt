@@ -123,6 +123,16 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
     fun signup() {
         val current = _uiState.value
 
+        if (current is SignupUiState.Error) {
+            _uiState.value = SignupUiState.Idle(
+                login = current.login,
+                tag = current.tag,
+                password = current.password,
+                passwordRepeat = current.passwordRepeat,
+                image = current.image
+            )
+        }
+
         if (current is SignupUiState.Idle) {
             if (current.login.isBlank() || current.password.isBlank()) {
                 _uiState.value = SignupUiState.Error(
