@@ -29,7 +29,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val tasks = repository.getTasks(token, groupId, limit, offset)
-                _uiState.value = TaskUiState.All(tasks)
+                _uiState.value = TaskUiState.All(tasks, group = repository.getGroup(token, groupId))
             } catch (e: HttpException) {
                 _uiState.value = TaskUiState.Error("Error: ${e.message()}")
             } catch (e: Exception) {
@@ -43,6 +43,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             is TaskUiState.All -> {
                 viewModelScope.launch {
                     _uiState.value = TaskUiState.InProcess(
+                        group = repository.getGroup(token, groupId),
                         tasks = repository.getTasks(
                             token,
                             groupId,
@@ -54,6 +55,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             is TaskUiState.Done -> {
                 viewModelScope.launch {
                     _uiState.value = TaskUiState.InProcess(
+                        group = repository.getGroup(token, groupId),
                         tasks = repository.getTasks(
                             token,
                             groupId,
@@ -71,6 +73,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             is TaskUiState.All -> {
                 viewModelScope.launch {
                     _uiState.value = TaskUiState.Done(
+                        group = repository.getGroup(token, groupId),
                         tasks = repository.getTasks(
                             token,
                             groupId,
@@ -82,6 +85,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             is TaskUiState.InProcess -> {
                 viewModelScope.launch {
                     _uiState.value = TaskUiState.Done(
+                        group = repository.getGroup(token, groupId),
                         tasks = repository.getTasks(
                             token,
                             groupId,
