@@ -36,9 +36,10 @@ data class RequestResult (
     val result: List<User>
 )
 
-class AddTaskViewModel(application: Application): AndroidViewModel(application) {
+class AddTaskViewModel(application: Application, groupId: Int, token: String): AndroidViewModel(application){
     private val _uiState = MutableStateFlow<AddTaskUIState>(AddTaskUIState.Idle())
     val uiState = _uiState.asStateFlow()
+
     private suspend fun loadUsers(): RequestResult {
         try {
             val request = NetworkService.api.allUsers()
@@ -60,8 +61,8 @@ class AddTaskViewModel(application: Application): AndroidViewModel(application) 
             _uiState.value = AddTaskUIState.Idle(
                 allUsers = if (result.code == 0) result.result else emptyList(),
                 ownerId = 1,
-                groupId = 21,
-                token = "1",
+                groupId = groupId,
+                token = token,
                 status = 0
             )
         }

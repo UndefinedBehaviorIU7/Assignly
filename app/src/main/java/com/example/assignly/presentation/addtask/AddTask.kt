@@ -1,5 +1,6 @@
 package com.example.assignly.presentation.addtask
 
+import android.app.Application
 import android.app.DatePickerDialog
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -59,6 +60,8 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.compose.material3.Text as Text
 
 @Composable
@@ -171,7 +174,21 @@ fun MemberField(uiState: AddTaskUIState, vm: AddTaskViewModel) {
 }
 
 @Composable
-fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
+fun AddTask(navController: NavController, groupId: Int, token: String)
+{
+    val context = LocalContext.current
+
+    val vm: AddTaskViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return AddTaskViewModel(
+                    application = context.applicationContext as Application,
+                    groupId = groupId,
+                    token = token
+                ) as T
+            }
+        }
+    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -358,7 +375,7 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
 
                 is AddTaskUIState.Success -> {
                     Log.d("ok1234","ok")
-                    navController.navigate("task_list")
+                    navController.navigate("${Navigation.TASK_LIST}/${groupId}")
                     Text(uiState.text)
                 }
 
@@ -391,6 +408,3 @@ fun AddTask(navController: NavController, vm: AddTaskViewModel = viewModel()) {
         }
     }
 }
-
-
-

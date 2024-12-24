@@ -131,12 +131,13 @@ fun TasksList(
             swipeableState.snapTo(SwipeState.Default)
         }
     }
+    val uiState = vm.uiState.collectAsState().value
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
-            .padding(top = 30.dp)
+            .padding(top = 40.dp)
             .swipeable(
                 state = swipeableState,
                 anchors = anchors,
@@ -145,36 +146,7 @@ fun TasksList(
             )
     ) {
         Column(modifier = Modifier.padding(bottom = 20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(R.drawable.arrow_left),
-                    contentDescription = "<",
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
-                )
-                Image(
-                    painter = painterResource(R.drawable.group_default),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(25.dp))
-                )
-                Text(
-                    modifier = Modifier.padding(start = 10.dp),
-                    text = "Undefined Behavior",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 20.sp
-                )
-            }
-
-            HorizontalDivider(
-                modifier = Modifier.padding(7.dp),
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.tertiary
-            )
-
-            when (val uiState = vm.uiState.collectAsState().value) {
+            when (uiState) {
                 is TaskUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier)
                 }
@@ -190,6 +162,38 @@ fun TasksList(
 
                 is TaskUiState.All -> {
 
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(R.drawable.arrow_left),
+                            contentDescription = "<",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.group_default),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(RoundedCornerShape(25.dp))
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .clickable { "${Navigation.INFO_GROUP}/${uiState.group.id}" }
+                                .padding(start = 10.dp),
+                            text = uiState.group.name,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 20.sp
+                        )
+                    }
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(7.dp),
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+
                     when (val svmState = svm.swipeState.collectAsState().value) {
                         SwipeState.Left -> {
                             if (svmState != SwipeState.Default) {
@@ -312,277 +316,359 @@ fun TasksList(
                             }
                         }
                     }
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 15.dp, end = 15.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.plus),
+                            contentDescription = "+",
+                            modifier = Modifier.size(30.dp).clickable { "${Navigation.ADD_TASK}/${uiState.group.id}/${vm.token}" }
+                        )
+                    }
                 }
-
 
                 is TaskUiState.InProcess -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(R.drawable.arrow_left),
+                            contentDescription = "<",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.group_default),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(RoundedCornerShape(25.dp))
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .clickable { "${Navigation.INFO_GROUP}/${uiState.group.id}" }
+                                .padding(start = 10.dp),
+                            text = uiState.group.name,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 20.sp
+                        )
+                    }
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(7.dp),
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+
                     when (val svmState = svm.swipeState.collectAsState().value) {
-                        SwipeState.Right -> {
-                            if (svmState != SwipeState.Default) {
-                                svm.updateSwipeState(SwipeState.Default)
-                            }
-                            vm.fetchTasks(groupId, limit, offset)
+                    SwipeState.Right -> {
+                        if (svmState != SwipeState.Default) {
+                            svm.updateSwipeState(SwipeState.Default)
                         }
+                        vm.fetchTasks(groupId, limit, offset)
+                    }
 
-                        SwipeState.Default -> {
-                            Row(
-                                modifier = Modifier.padding(
-                                    top = 5.dp,
-                                    start = 28.dp,
-                                    end = 30.dp,
-                                    bottom = 10.dp
-                                )
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(
-                                            top = 7.dp,
-                                            bottom = 7.dp,
-                                            start = 20.dp,
-                                            end = 20.dp
-                                        )
-                                        .clickable {
-                                            vm.fetchTasks(
-                                                groupId,
-                                                limit,
-                                                offset
-                                            )
-                                        }
-                                ) {
-                                    Text(
-                                        text = "All",
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 20.sp
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .border(
-                                            1.dp,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(
-                                            top = 7.dp,
-                                            bottom = 7.dp,
-                                            start = 20.dp,
-                                            end = 20.dp
-                                        )
-                                        .clickable {
-                                            vm.inProgress(
-                                                groupId,
-                                                limit,
-                                                offset
-                                            )
-                                        }
-                                ) {
-                                    Text(
-                                        text = "In Progress",
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 20.sp
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(
-                                            top = 7.dp,
-                                            bottom = 7.dp,
-                                            start = 20.dp,
-                                            end = 20.dp
-                                        )
-                                        .clickable { vm.done(groupId, limit, offset) }
-                                ) {
-                                    Text(
-                                        text = "Done",
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 20.sp
-                                    )
-                                }
-                            }
-
-                            LazyColumn(
+                    SwipeState.Default -> {
+                        Row(
+                            modifier = Modifier.padding(
+                                top = 5.dp,
+                                start = 28.dp,
+                                end = 30.dp,
+                                bottom = 10.dp
+                            )
+                        ) {
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(650.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                contentPadding = PaddingValues(10.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                                    .padding(
+                                        top = 7.dp,
+                                        bottom = 7.dp,
+                                        start = 20.dp,
+                                        end = 20.dp
+                                    )
+                                    .clickable {
+                                        vm.fetchTasks(
+                                            groupId,
+                                            limit,
+                                            offset
+                                        )
+                                    }
                             ) {
-                                items(uiState.tasks) { task ->
-                                    TaskPreview(task, 380)
-                                }
+                                Text(
+                                    text = "All",
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 20.sp
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                                    .border(
+                                        1.dp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                                    .padding(
+                                        top = 7.dp,
+                                        bottom = 7.dp,
+                                        start = 20.dp,
+                                        end = 20.dp
+                                    )
+                                    .clickable {
+                                        vm.inProgress(
+                                            groupId,
+                                            limit,
+                                            offset
+                                        )
+                                    }
+                            ) {
+                                Text(
+                                    text = "In Progress",
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 20.sp
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                                    .padding(
+                                        top = 7.dp,
+                                        bottom = 7.dp,
+                                        start = 20.dp,
+                                        end = 20.dp
+                                    )
+                                    .clickable { vm.done(groupId, limit, offset) }
+                            ) {
+                                Text(
+                                    text = "Done",
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 20.sp
+                                )
                             }
                         }
 
-                        SwipeState.Left -> {
-                            if (svmState != SwipeState.Default) {
-                                svm.updateSwipeState(SwipeState.Default)
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(650.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            contentPadding = PaddingValues(10.dp)
+                        ) {
+                            items(uiState.tasks) { task ->
+                                TaskPreview(task, 380)
                             }
-                            vm.done(groupId, limit, offset)
                         }
                     }
 
-                }
-
-                is TaskUiState.Done -> {
-                    when (val svmState = svm.swipeState.collectAsState().value) {
-                        SwipeState.Right -> {
-                            if (svmState != SwipeState.Default) {
-                                svm.updateSwipeState(SwipeState.Default)
-                            }
-                            vm.inProgress(groupId, limit, offset)
+                    SwipeState.Left -> {
+                        if (svmState != SwipeState.Default) {
+                            svm.updateSwipeState(SwipeState.Default)
                         }
-
-                        SwipeState.Default -> {
-                            Row(
-                                modifier = Modifier.padding(
-                                    top = 5.dp,
-                                    start = 28.dp,
-                                    end = 30.dp,
-                                    bottom = 10.dp
-                                )
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(
-                                            top = 7.dp,
-                                            bottom = 7.dp,
-                                            start = 20.dp,
-                                            end = 20.dp
-                                        )
-                                        .clickable {
-                                            vm.fetchTasks(
-                                                groupId,
-                                                limit,
-                                                offset
-                                            )
-                                        }
-                                ) {
-                                    Text(
-                                        text = "All",
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 20.sp
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(
-                                            top = 7.dp,
-                                            bottom = 7.dp,
-                                            start = 20.dp,
-                                            end = 20.dp
-                                        )
-                                        .clickable {
-                                            vm.inProgress(
-                                                groupId,
-                                                limit,
-                                                offset
-                                            )
-                                        }
-                                ) {
-                                    Text(
-                                        text = "In Progress",
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 20.sp
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .border(
-                                            1.dp,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(
-                                            top = 7.dp,
-                                            bottom = 7.dp,
-                                            start = 20.dp,
-                                            end = 20.dp
-                                        )
-                                        .clickable { vm.done(groupId, limit, offset) }
-                                ) {
-                                    Text(
-                                        text = "Done",
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 20.sp
-                                    )
-                                }
-                            }
-
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(650.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                contentPadding = PaddingValues(10.dp)
-                            ) {
-                                items(uiState.tasks) { task ->
-                                    TaskPreview(task, 380)
-                                }
-                            }
-                        }
-
-                        SwipeState.Left -> {
-                            if (svmState != SwipeState.Default) {
-                                svm.updateSwipeState(SwipeState.Default)
-                            }
-                        }
+                        vm.done(groupId, limit, offset)
                     }
                 }
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 15.dp, end = 15.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.plus),
+                            contentDescription = "+",
+                            modifier = Modifier.size(30.dp).clickable { "${Navigation.ADD_TASK}/${uiState.group.id}" }
+                        )
+                    }
 
-                TaskUiState.Idle -> TODO()
             }
 
+            is TaskUiState.Done -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(R.drawable.arrow_left),
+                        contentDescription = "<",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.group_default),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(RoundedCornerShape(25.dp))
+                    )
 
+                    Text(
+                        modifier = Modifier
+                            .clickable { "${Navigation.INFO_GROUP}/${uiState.group.id}" }
+                            .padding(start = 10.dp),
+                        text = uiState.group.name,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 20.sp
+                    )
+                }
 
-            Row(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(top = 15.dp, end = 15.dp)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.plus),
-                    contentDescription = "<",
-                    modifier = Modifier.size(30.dp)
+                HorizontalDivider(
+                    modifier = Modifier.padding(7.dp),
+                    thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.tertiary
                 )
+                when (val svmState = svm.swipeState.collectAsState().value) {
+                SwipeState.Right -> {
+                    if (svmState != SwipeState.Default) {
+                        svm.updateSwipeState(SwipeState.Default)
+                    }
+                    vm.inProgress(groupId, limit, offset)
+                }
+
+                SwipeState.Default -> {
+                    Row(
+                        modifier = Modifier.padding(
+                            top = 5.dp,
+                            start = 28.dp,
+                            end = 30.dp,
+                            bottom = 10.dp
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .padding(
+                                    top = 7.dp,
+                                    bottom = 7.dp,
+                                    start = 20.dp,
+                                    end = 20.dp
+                                )
+                                .clickable {
+                                    vm.fetchTasks(
+                                        groupId,
+                                        limit,
+                                        offset
+                                    )
+                                }
+                        ) {
+                            Text(
+                                text = "All",
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 20.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .padding(
+                                    top = 7.dp,
+                                    bottom = 7.dp,
+                                    start = 20.dp,
+                                    end = 20.dp
+                                )
+                                .clickable {
+                                    vm.inProgress(
+                                        groupId,
+                                        limit,
+                                        offset
+                                    )
+                                }
+                        ) {
+                            Text(
+                                text = "In Progress",
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 20.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .border(
+                                    1.dp,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .padding(
+                                    top = 7.dp,
+                                    bottom = 7.dp,
+                                    start = 20.dp,
+                                    end = 20.dp
+                                )
+                                .clickable { vm.done(groupId, limit, offset) }
+                        ) {
+                            Text(
+                                text = "Done",
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(650.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        contentPadding = PaddingValues(10.dp)
+                    ) {
+                        items(uiState.tasks) { task ->
+                            TaskPreview(task, 380)
+                        }
+                    }
+                }
+
+                SwipeState.Left -> {
+                    if (svmState != SwipeState.Default) {
+                        svm.updateSwipeState(SwipeState.Default)
+                    }
+                }
             }
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(top = 15.dp, end = 15.dp)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.plus),
+                        contentDescription = "+",
+                        modifier = Modifier.size(30.dp).clickable { "${Navigation.ADD_TASK}/${uiState.group.id}" }
+                    )
+                }
+        }
+
+            TaskUiState.Idle -> TODO()
+        }
+
         }
     }
 }

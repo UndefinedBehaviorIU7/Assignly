@@ -49,8 +49,15 @@ class MainActivity : ComponentActivity() {
                         Login(navController)
                     }
 
-                    composable(Navigation.ADD_TASK.toString()) {
-                        AddTask(navController)
+                    composable(
+                        route = "${Navigation.ADD_TASK}/{groupId}/{token}",
+                        arguments = listOf(navArgument("groupId") { type = NavType.IntType },
+                            navArgument("token") {type = NavType.StringType}
+                        )
+                    ) { backStackEntry ->
+                        val groupId = backStackEntry.arguments?.getInt("groupId")
+                        val token = backStackEntry.arguments?.getString("token")
+                        AddTask(navController = navController, groupId = groupId!!, token!!)
                     }
 
                     composable(Navigation.SIGNUP.toString()) {
