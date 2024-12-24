@@ -39,34 +39,32 @@ class GroupViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun searchGroups(query: String) {
-        viewModelScope.launch {
-            val currentState = _uiState.value
+        val currentState = _uiState.value
 
-            if (query.isEmpty()) {
-                if (currentState is GroupUiState.Search) {
-                    _uiState.value = GroupUiState.All(currentState.groups)
-                }
-            } else {
-                val groups = when (currentState) {
-                    is GroupUiState.All -> {
-                        currentState.groups
-                    }
-
-                    is GroupUiState.Search -> {
-                        currentState.groups
-                    }
-
-                    else -> {
-                        emptyList()
-                    }
-                }
-
-                val filteredGroups = groups.filter {
-                    it.name.contains(query, ignoreCase = true)
-                }
-
-                _uiState.value = GroupUiState.Search(groups, filteredGroups)
+        if (query.isEmpty()) {
+            if (currentState is GroupUiState.Search) {
+                _uiState.value = GroupUiState.All(currentState.groups)
             }
+        } else {
+            val groups = when (currentState) {
+                is GroupUiState.All -> {
+                    currentState.groups
+                }
+
+                is GroupUiState.Search -> {
+                    currentState.groups
+                }
+
+                else -> {
+                    emptyList()
+                }
+            }
+
+            val filteredGroups = groups.filter {
+                it.name.contains(query, ignoreCase = true)
+            }
+
+            _uiState.value = GroupUiState.Search(groups, filteredGroups)
         }
     }
 
@@ -74,6 +72,16 @@ class GroupViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val request = NetworkService.api.getImage(path)
+            } catch (e: HttpException) {
+                // TODO: возврат ошибки через стейты
+            }
+        }
+    }
+
+    fun logOut() {
+        viewModelScope.launch {
+            try {
+                val request = NetworkService.api.logout(token.toString())
             } catch (e: HttpException) {
                 // TODO: возврат ошибки через стейты
             }
