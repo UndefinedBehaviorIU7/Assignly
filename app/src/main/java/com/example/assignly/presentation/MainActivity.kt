@@ -19,6 +19,7 @@ import com.example.assignly.ui.theme.AssignlyTheme
 import com.example.assignly.presentation.addtask.AddTask
 import com.example.assignly.presentation.groupList.GroupListScreen
 import com.example.assignly.presentation.infoGroup.infoGroup
+import com.example.assignly.presentation.taskInfo.TaskInfo
 
 enum class Navigation(val route: String) {
     LOGIN("login"),
@@ -27,7 +28,8 @@ enum class Navigation(val route: String) {
     ADD_TASK("add_task"),
     ADD_GROUP("add_group"),
     GROUP_LIST("group_list"),
-    INFO_GROUP("info_group")
+    INFO_GROUP("info_group"),
+    TASK_INFO("task_info")
 }
 
 @ExperimentalStdlibApi
@@ -85,6 +87,10 @@ class MainActivity : ComponentActivity() {
                     ) { backStackEntry ->
                         val groupId = backStackEntry.arguments?.getInt("groupId")
                         TasksList(navController = navController, groupId = groupId!!)
+                    }
+
+                    composable(Navigation.TASK_INFO.toString()) {
+                        TaskInfo(navController = navController)
                     }
 
                     composable(Navigation.ADD_GROUP.toString()) {
