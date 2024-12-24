@@ -8,5 +8,9 @@ sealed class GroupUiState {
 
     data class All(val groups: List<Group>) : GroupUiState()
 
-    data class Error(val message: String) : GroupUiState()
+    data class Search(val groups: List<Group>,
+                      val searchedGroups: List<Group>) : GroupUiState()
+
+    data class Error(val groups: List<Group>,
+                     val message: String) : GroupUiState()
 }

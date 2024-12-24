@@ -6,6 +6,7 @@ import android.health.connect.datatypes.HeartRateRecord
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.assignly.api.NetworkService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,22 +31,42 @@ class GroupViewModel(application: Application) : AndroidViewModel(application) {
                 val groups = repository.getGroups(token)
                 _uiState.value = GroupUiState.All(groups)
             } catch (e: HttpException) {
-                _uiState.value = GroupUiState.Error("Error: ${e.message()}")
+                _uiState.value = GroupUiState.Error(emptyList(), "Error: ${e.message()}")
             } catch (e: Exception) {
-                _uiState.value = GroupUiState.Error("Unexpected error: ${e.localizedMessage}")
+                _uiState.value = GroupUiState.Error(emptyList(),"Unexpected error: ${e.localizedMessage}")
             }
         }
     }
 
     fun searchGroups(query: String) {
-        Log.d("SEARCH_START", "SEARCH STARTED")
-        val currentState = _uiState.value
-        if (currentState is GroupUiState.All) {
-            val filteredGroups = currentState.groups.filter {
-                it.name.contains(query, ignoreCase = true)
+        viewModelScope.launch {
+            val currentState = _uiState.value
+
+            if (query.isEmpty()) {
+                if (currentState is GroupUiState.Search) {
+                    _uiState.value = GroupUiState.All(currentState.groups)
+                }
+            } else {
+                val groups = when (currentState) {
+                    is GroupUiState.All -> {
+                        currentState.groups
+                    }
+
+                    is GroupUiState.Search -> {
+                        currentState.groups
+                    }
+
+                    else -> {
+                        emptyList()
+                    }
+                }
+
+                val filteredGroups = groups.filter {
+                    it.name.contains(query, ignoreCase = true)
+                }
+
+                _uiState.value = GroupUiState.Search(groups, filteredGroups)
             }
-            Log.d("SEARCH", filteredGroups.toString())
-            _uiState.value = GroupUiState.All(filteredGroups)
         }
     }
 
