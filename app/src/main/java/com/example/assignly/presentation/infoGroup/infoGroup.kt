@@ -120,7 +120,7 @@ fun infoGroup(navController: NavController, groupId: Int, token: String) {
                             contentDescription = "<",
                             modifier = Modifier
                                 .size(50.dp)
-                                .clickable { navController.navigate(Navigation.GROUP_LIST.toString()) },
+                                .clickable { navController.navigate("${Navigation.TASK_LIST}/${groupId}") },
                         )
                         Image(
                             painter = painterResource(R.drawable.group_default),

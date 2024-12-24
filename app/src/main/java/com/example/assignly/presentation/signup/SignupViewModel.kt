@@ -190,6 +190,15 @@ class SignupViewModel(application: Application): AndroidViewModel(application) {
                             errorMessage = "could not add user"
                         )
                     }
+                } catch (e: Exception) {
+                    _uiState.value = SignupUiState.Error (
+                        login = current.login,
+                        tag = current.tag,
+                        password = current.password,
+                        passwordRepeat = current.passwordRepeat,
+                        image = current.image,
+                        errorMessage = "server error"
+                    )
                 }
             }
         }
