@@ -62,6 +62,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.assignly.presentation.addGroup.AddGroupViewModel
 import androidx.compose.material3.Text as Text
 
 @Composable
@@ -177,7 +178,6 @@ fun MemberField(uiState: AddTaskUIState, vm: AddTaskViewModel) {
 fun AddTask(navController: NavController, groupId: Int, token: String)
 {
     val context = LocalContext.current
-
     val vm: AddTaskViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {

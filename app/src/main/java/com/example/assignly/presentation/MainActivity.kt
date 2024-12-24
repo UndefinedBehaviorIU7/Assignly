@@ -68,8 +68,15 @@ class MainActivity : ComponentActivity() {
                         GroupListScreen(navController)
                     }
 
-                    composable(Navigation.INFO_GROUP.toString()) {
-                        infoGroup(navController)
+                    composable(
+                        route = "${Navigation.INFO_GROUP}/{groupId}/{token}",
+                        arguments = listOf(navArgument("groupId") { type = NavType.IntType },
+                            navArgument("token") {type = NavType.StringType}
+                        )
+                    ) { backStackEntry ->
+                        val groupId = backStackEntry.arguments?.getInt("groupId")
+                        val token = backStackEntry.arguments?.getString("token")
+                        infoGroup(navController = navController, groupId = groupId!!, token!!)
                     }
 
                     composable(

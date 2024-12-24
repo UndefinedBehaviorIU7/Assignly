@@ -15,12 +15,14 @@ data class RequestResult(
     val result: Group?
 )
 
-class infoGroupViewModel(application: Application): AndroidViewModel(application) {
+class infoGroupViewModel(application: Application, groupId: Int, token: String): AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<infoGroupUIState>(infoGroupUIState.Idle())
     val uiState = _uiState.asStateFlow()
+    private val privateGroupId = groupId
+    private val privatetoken = token
     private suspend fun loadInfoGroup(): RequestResult {
         try {
-            val request = NetworkService.api.groupById(token = "1", groupId = 22)
+            val request = NetworkService.api.groupById(token = privatetoken, groupId = privateGroupId)
             return RequestResult(
                 code = 0,
                 result = request
@@ -37,7 +39,7 @@ class infoGroupViewModel(application: Application): AndroidViewModel(application
         viewModelScope.launch {
             val result = loadInfoGroup()
             _uiState.value = infoGroupUIState.Idle(
-                groupId = 21,
+                groupId = groupId,
                 name = result.result!!.name,
                 description = result.result.description,
 //                image = result.result.image,
