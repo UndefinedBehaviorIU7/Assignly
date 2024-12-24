@@ -26,6 +26,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -114,17 +116,19 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
                                     .height(300.dp)
                             ) {
                                 uiState.allUsers.forEach { user ->
-                                    DropdownMenuItem(
-                                        text = { Text(text = user.tag) },
-                                        onClick = {
-                                            if (user !in uiState.members) {
-                                                uiState.members.add(user)
-                                            } else {
-                                                uiState.members.remove(user)
+                                    if (user.id != vm.id) {
+                                        DropdownMenuItem(
+                                            text = { Text(text = user.tag) },
+                                            onClick = {
+                                                if (user !in uiState.members) {
+                                                    uiState.members.add(user)
+                                                } else {
+                                                    uiState.members.remove(user)
+                                                }
+                                                vm.updateUiState(newMenuExtended = false)
                                             }
-                                            vm.updateUiState(newMenuExtended = false)
-                                        }
-                                    )
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -221,17 +225,19 @@ fun AddGroup(navController: NavController, vm: AddGroupViewModel = viewModel()) 
                                     .height(300.dp)
                             ) {
                                 uiState.allUsers.forEach { user ->
-                                    DropdownMenuItem(
-                                        text = { Text(text = user.tag) },
-                                        onClick = {
-                                            if (user !in uiState.members) {
-                                                uiState.members.add(user)
-                                            } else {
-                                                uiState.members.remove(user)
+                                    if (user.id != vm.id) {
+                                        DropdownMenuItem(
+                                            text = { Text(text = user.tag) },
+                                            onClick = {
+                                                if (user !in uiState.members) {
+                                                    uiState.members.add(user)
+                                                } else {
+                                                    uiState.members.remove(user)
+                                                }
+                                                vm.updateUiState(newMenuExtended = false)
                                             }
-                                            vm.updateUiState(newMenuExtended = false)
-                                        }
-                                    )
+                                        )
+                                    }
                                 }
                             }
                         }

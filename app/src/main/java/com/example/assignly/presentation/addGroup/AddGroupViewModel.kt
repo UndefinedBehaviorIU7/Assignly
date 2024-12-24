@@ -27,6 +27,10 @@ class AddGroupViewModel(application: Application): AndroidViewModel(application)
     private val _uiState = MutableStateFlow<AddGroupUiState>(AddGroupUiState.Idle())
     val uiState = _uiState.asStateFlow()
 
+    private val sharedPref = getApplication<Application>()
+        .getSharedPreferences("auth", Context.MODE_PRIVATE)
+    val id = sharedPref.getInt("id", 0)
+
     private suspend fun loadUsers(): RequestResult {
         try {
             val request = NetworkService.api.allUsers()
